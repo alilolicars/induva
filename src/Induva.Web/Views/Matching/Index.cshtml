@@ -1,0 +1,168 @@
+@{
+    ViewData["Title"] = "Opportunity Matcher";
+    var myFactories = ViewBag.MyFactories as IReadOnlyList<Induva.Application.Dtos.FactoryListItemDto> ?? [];
+    var myStartups = ViewBag.MyStartups as IReadOnlyList<Induva.Application.Dtos.StartupListItemDto> ?? [];
+    var initialMatches = ViewBag.InitialMatches as Induva.Application.Dtos.MatchingSummaryDto;
+    var initSource = ViewBag.InitialSource as MatchEntityType?;
+    var initSourceId = ViewBag.InitialSourceId as int?;
+    var initTarget = ViewBag.InitialTarget as MatchEntityType?;
+}
+
+<div class="mb-4">
+    <h1 class="h2 fw-bold mb-1">🎯 AI Opportunity Matcher (F4)</h1>
+    <p class="text-muted mb-0">Hybrid matchmaker combining deterministic multi-factor rules with AI nuance to pair your capabilities with local suppliers, demand RFQs, or investors.</p>
+</div>
+
+<!-- Selection Form -->
+<div class="card shadow-sm border-0 mb-4">
+    <div class="card-body p-4">
+        <form id="matching-form" class="row g-3 align-items-end">
+            <div class="col-md-3">
+                <label class="form-label small fw-bold">Source Entity Type</label>
+                <select id="matchSourceType" class="form-select">
+                    <option value="Factory" selected="@(initSource == MatchEntityType.Factory)">🏭 My Factory</option>
+                    <option value="Startup" selected="@(initSource == MatchEntityType.Startup)">💡 My Startup</option>
+                </select>
+            </div>
+
+            <div class="col-md-4">
+                <label class="form-label small fw-bold">Select Your Facility / Venture</label>
+                <!-- Factory Select -->
+                <select id="factorySelect" class="form-select @(initSource == MatchEntityType.Startup ? "d-none" : "")">
+                    @if (myFactories.Count == 0)
+                    {
+                        <option value="">No factories registered yet</option>
+                    }
+                    else
+                    {
+                        @foreach (var f in myFactories)
+                        {
+                            <option value="@f.Id" selected="@(initSourceId == f.Id)">@f.Name (@f.Sector)</option>
+                        }
+                    }
+                </select>
+                <!-- Startup Select -->
+                <select id="startupSelect" class="form-select @(initSource != MatchEntityType.Startup ? "d-none" : "")">
+                    @if (myStartups.Count == 0)
+                    {
+                        <option value="">No startups registered yet</option>
+                    }
+                    else
+                    {
+                        @foreach (var s in myStartups)
+                        {
+                            <option value="@s.Id" selected="@(initSourceId == s.Id)">@s.Name (@s.Sector)</option>
+                        }
+                    }
+                </select>
+            </div>
+
+            <div class="col-md-3">
+                <label class="form-label small fw-bold">Match Against</label>
+                <select id="matchTargetType" class="form-select">
+                    <!-- Options populated dynamically based on Source -->
+                    <option value="Supplier" selected="@(initTarget == MatchEntityType.Supplier)">📦 Raw Material Suppliers</option>
+                    <option value="DemandRequest" selected="@(initTarget == MatchEntityType.DemandRequest)">📑 Buyer Demand (RFQs)</option>
+                    <option value="Investor" selected="@(initTarget == MatchEntityType.Investor)">💼 Industrial Investors</option>
+                </select>
+            </div>
+
+            <div class="col-md-2">
+                <button type="submit" id="btn-find-matches" class="btn btn-primary w-100">
+                    Find Matches
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div id="matching-target">
+    @if (initialMatches is not null)
+    {
+        <partial name="_MatchResultsCard" model="initialMatches" />
+    }
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const sourceType = document.getElementById('matchSourceType');
+            const targetType = document.getElementById('matchTargetType');
+            const factorySelect = document.getElementById('factorySelect');
+            const startupSelect = document.getElementById('startupSelect');
+            const form = document.getElementById('matching-form');
+            const btn = document.getElementById('btn-find-matches');
+            const target = document.getElementById('matching-target');
+
+            function updateTargetOptions() {
+                const src = sourceType.value;
+                targetType.innerHTML = '';
+                if (src === 'Factory') {
+                    factorySelect.classList.remove('d-none');
+                    startupSelect.classList.add('d-none');
+                    targetType.innerHTML = `
+                        <option value="Supplier">📦 Raw Material Suppliers</option>
+                        <option value="DemandRequest">📑 Buyer Demand (RFQs)</option>
+                        <option value="Investor">💼 Industrial Investors</option>
+                    `;
+                } else {
+                    factorySelect.classList.add('d-none');
+                    startupSelect.classList.remove('d-none');
+                    targetType.innerHTML = `
+                        <option value="Factory">🏭 Production Factories</option>
+                        <option value="Investor">💼 Industrial Investors</option>
+                    `;
+                }
+            }
+
+            sourceType.addEventListener('change', updateTargetOptions);
+
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const src = sourceType.value;
+                const srcId = src === 'Factory' ? parseInt(factorySelect.value, 10) : parseInt(startupSelect.value, 10);
+                const tgt = targetType.value;
+
+                if (!srcId) {
+                    alert('Please select or register a facility/venture first.');
+                    return;
+                }
+
+                btn.disabled = true;
+                btn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> Scoring & Re-ranking...';
+                target.innerHTML = '<div class="text-center py-5"><div class="spinner-border text-primary mb-2"></div><p class="text-muted small">Computing multi-factor fit scores and AI adjustments...</p></div>';
+
+                try {
+                    const token = document.querySelector('meta[name="csrf"]')?.getAttribute('content');
+                    const res = await fetch('/matching/find', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'RequestVerificationToken': token || '',
+                            'X-Requested-With': 'XMLHttpRequest'
+                        },
+                        body: JSON.stringify({
+                            sourceType: src,
+                            sourceId: srcId,
+                            targetType: tgt
+                        })
+                    });
+
+                    if (!res.ok) {
+                        const err = await res.json().catch(() => ({ error: 'Matching failed.' }));
+                        target.innerHTML = `<div class="alert alert-danger shadow-sm">⚠️ ${err.error || 'Matching failed.'}</div>`;
+                        return;
+                    }
+
+                    target.innerHTML = await res.text();
+                } catch (err) {
+                    target.innerHTML = `<div class="alert alert-danger shadow-sm">⚠️ Network error: ${err.message}</div>`;
+                } finally {
+                    btn.disabled = false;
+                    btn.innerHTML = 'Find Matches';
+                }
+            });
+        });
+    </script>
+}
+

@@ -1,0 +1,166 @@
+@model InvestmentAssumptionsDto
+
+<div class="card shadow-sm border-0 mb-4" id="assumptions-card">
+    <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center flex-wrap gap-2">
+        <div>
+            <h5 class="fw-bold mb-0 text-primary">📝 Proposed Industrial Economics: @Model.ProductName</h5>
+            <small class="text-muted">Review and adjust assumptions below. Financial metrics recalculate deterministically with zero AI cost.</small>
+        </div>
+        <div>
+            <span class="badge bg-primary-subtle text-primary border">Confidence: @((Model.Confidence * 100).ToString("F0"))%</span>
+            @if (Model.FromCache)
+            {
+                <span class="badge bg-light text-muted border">Cached</span>
+            }
+        </div>
+    </div>
+    <div class="card-body p-4">
+        <!-- Rationale & Unit Definition -->
+        @if (Model.Rationale.Count > 0)
+        {
+            <div class="alert alert-info border-info-subtle small mb-3">
+                <span class="fw-bold d-block">Production Scope & Basis:</span>
+                <ul class="mb-0 ps-3">
+                    @foreach (var r in Model.Rationale)
+                    {
+                        <li>@r</li>
+                    }
+                </ul>
+            </div>
+        }
+
+        <form id="calculate-form">
+            <input type="hidden" id="calcProductName" value="@Model.ProductName" />
+            <input type="hidden" id="calcCategory" value="@Model.Category" />
+            <input type="hidden" id="calcGovernorateId" value="@Model.GovernorateId" />
+            <input type="hidden" id="calcFactoryId" value="@Model.FactoryId" />
+
+            <div class="row g-3 mb-3">
+                <div class="col-md-4">
+                    <label class="form-label small fw-bold">Upfront Capital Expenditure (Capex)</label>
+                    <div class="input-group input-group-sm">
+                        <input type="number" id="calcCapex" class="form-control" value="@Model.Assumptions.CapexEgp" min="0" step="1000" required />
+                        <span class="input-group-text">EGP</span>
+                    </div>
+                    <div class="form-text small">Machinery tooling, mold fabrication, installation.</div>
+                </div>
+
+                <div class="col-md-4">
+                    <label class="form-label small fw-bold">Target Monthly Volume</label>
+                    <div class="input-group input-group-sm">
+                        <input type="number" id="calcVolume" class="form-control" value="@Model.Assumptions.MonthlyVolumeUnits" min="1" step="10" required />
+                        <span class="input-group-text">Units / mo</span>
+                    </div>
+                    <div class="form-text small">Production capacity target at maturity.</div>
+                </div>
+
+                <div class="col-md-4">
+                    <label class="form-label small fw-bold">Target Wholesale Selling Price</label>
+                    <div class="input-group input-group-sm">
+                        <input type="number" id="calcPrice" class="form-control" value="@Model.Assumptions.UnitPriceEgp" min="0.01" step="0.5" required />
+                        <span class="input-group-text">EGP / unit</span>
+                    </div>
+                    <div class="form-text small">Ex-factory unit selling price.</div>
+                </div>
+            </div>
+
+            <!-- Variable Costs Breakdown Row -->
+            <div class="card bg-light border-0 p-3 mb-3">
+                <h6 class="fw-bold small mb-2 text-dark">Unit Variable Costs (per 1 finished unit)</h6>
+                <div class="row g-2">
+                    <div class="col-6 col-md-3">
+                        <label class="form-label small text-muted mb-0">Raw Materials</label>
+                        <div class="input-group input-group-sm">
+                            <input type="number" id="calcMaterialCost" class="form-control" value="@Model.Assumptions.UnitMaterialCostEgp" min="0" step="0.1" required />
+                            <span class="input-group-text">EGP</span>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <label class="form-label small text-muted mb-0">Direct Labor</label>
+                        <div class="input-group input-group-sm">
+                            <input type="number" id="calcLaborCost" class="form-control" value="@Model.Assumptions.UnitLaborCostEgp" min="0" step="0.1" required />
+                            <span class="input-group-text">EGP</span>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <label class="form-label small text-muted mb-0">Power / Energy</label>
+                        <div class="input-group input-group-sm">
+                            <input type="number" id="calcEnergyCost" class="form-control" value="@Model.Assumptions.UnitEnergyCostEgp" min="0" step="0.1" required />
+                            <span class="input-group-text">EGP</span>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <label class="form-label small text-muted mb-0">Transport / Freight</label>
+                        <div class="input-group input-group-sm">
+                            <input type="number" id="calcTransportCost" class="form-control" value="@Model.Assumptions.UnitTransportCostEgp" min="0" step="0.1" required />
+                            <span class="input-group-text">EGP</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Fixed Costs & Ramp Up -->
+            <div class="row g-3 mb-3">
+                <div class="col-md-4">
+                    <label class="form-label small fw-bold">Monthly Fixed Overhead</label>
+                    <div class="input-group input-group-sm">
+                        <input type="number" id="calcFixedCosts" class="form-control" value="@Model.Assumptions.MonthlyFixedCostsEgp" min="0" step="500" required />
+                        <span class="input-group-text">EGP / mo</span>
+                    </div>
+                    <div class="form-text small">Facility rent, admin, maintenance.</div>
+                </div>
+
+                <div class="col-md-4">
+                    <label class="form-label small fw-bold">Ramp-Up Duration</label>
+                    <div class="input-group input-group-sm">
+                        <input type="number" id="calcRampUp" class="form-control" value="@Model.Assumptions.RampUpMonths" min="0" max="24" step="1" required />
+                        <span class="input-group-text">Months</span>
+                    </div>
+                    <div class="form-text small">Time to achieve full target monthly volume.</div>
+                </div>
+
+                <div class="col-md-4">
+                    <label class="form-label small fw-bold">Projection Window</label>
+                    <select id="calcYears" class="form-select form-select-sm">
+                        <option value="3" selected>3 Years</option>
+                        <option value="5">5 Years</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Capex Itemization -->
+            @if (Model.CapexBreakdown.Count > 0)
+            {
+                <div class="mb-3">
+                    <label class="form-label small fw-bold text-muted">Capex Breakdown Proposed by AI:</label>
+                    <div class="table-responsive">
+                        <table class="table table-sm table-bordered bg-white small mb-0">
+                            <thead>
+                                <tr class="table-light">
+                                    <th>Capital Item</th>
+                                    <th style="width: 150px;" class="text-end">Estimated Cost (EGP)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var c in Model.CapexBreakdown)
+                                {
+                                    <tr>
+                                        <td>@c.Item</td>
+                                        <td class="text-end fw-semibold">@c.Egp.ToString("N0")</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            }
+
+            <div class="d-flex justify-content-end pt-3 border-top">
+                <button type="submit" id="btn-recalculate" class="btn btn-success px-4">
+                    📊 Calculate Scenarios (Zero AI Cost)
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+

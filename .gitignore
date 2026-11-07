@@ -1,0 +1,30 @@
+## Build and debug folders
+bin/
+obj/
+out/
+
+## Visual Studio / Rider / VS Code
+.vs/
+.idea/
+.vscode/
+*.user
+*.userosscache
+*.suo
+*.userprefs
+
+## Local configuration & secrets
+appsettings.*.local.json
+appsettings.Development.json
+*.local.json
+
+## Logs & test output
+*.log
+TestResults/
+
+## OS generated
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+.DS_Store
+

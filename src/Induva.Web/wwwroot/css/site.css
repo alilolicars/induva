@@ -1,0 +1,152 @@
+/* INDUVA Design System Tokens */
+:root {
+  --bg-page: #F6F4EF;
+  --bg-surface: #FFFFFF;
+  --border-hairline: #E3DFD6;
+  --border-input: #D5D0C5;
+  --color-ink: #0E1B24;
+  --color-muted: #5B6670;
+  --color-subtle: #8A949C;
+  --color-primary: #0B5563;
+  --color-primary-hover: #094651;
+  --color-primary-tint: #E3F1F3;
+  --color-copper: #C96A2B;
+  --color-copper-text: #A8531A;
+  --color-copper-tint: #FBEBDD;
+  --color-success: #2E7D5B;
+  --color-success-tint: #E4F2EB;
+  --color-warning: #B7791F;
+  --color-warning-tint: #FAF0DA;
+  --color-danger: #B3382C;
+  --color-danger-tint: #F9E5E2;
+  --color-info: #2B6CB0;
+  --color-info-tint: #E3EEF9;
+}
+
+body {
+  font-family: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  background-color: var(--bg-page);
+  color: var(--color-ink);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.font-mono {
+  font-family: 'IBM Plex Mono', monospace;
+  font-feature-settings: 'tnum' on, 'lnum' on;
+}
+
+/* Button & Component Overrides */
+.btn-primary-teal {
+  background-color: var(--color-primary);
+  color: #FFFFFF !important;
+  border: none;
+  height: 44px;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 15px;
+  padding: 0 20px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  transition: background-color 0.15s ease-in-out;
+}
+.btn-primary-teal:hover {
+  background-color: var(--color-primary-hover);
+  color: #FFFFFF !important;
+}
+
+.btn-secondary-white {
+  background-color: var(--bg-surface);
+  color: var(--color-ink) !important;
+  border: 1px solid var(--border-input);
+  height: 44px;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 15px;
+  padding: 0 20px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  transition: all 0.15s ease-in-out;
+}
+.btn-secondary-white:hover {
+  background-color: #F9F8F5;
+  border-color: #BDB7AB;
+}
+
+/* Form Inputs */
+.form-control-induva, .form-select-induva {
+  height: 44px;
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-input);
+  border-radius: 8px;
+  color: var(--color-ink);
+  font-size: 15px;
+  padding: 8px 12px;
+}
+.form-control-induva:focus, .form-select-induva:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(11, 85, 99, 0.2);
+  outline: none;
+}
+
+/* Cards & Badges */
+.card-induva {
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-hairline);
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 1px 2px rgba(14, 27, 36, 0.06);
+}
+
+.badge-ai-estimate {
+  height: 24px;
+  border-radius: 999px;
+  background-color: var(--color-copper-tint);
+  color: var(--color-copper-text);
+  font-size: 12px;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 0 10px;
+}
+
+.eyebrow {
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--color-primary);
+}
+
+/* Non-scrollable Auth Page Viewport */
+html.auth-page-html,
+body.auth-page-body {
+  height: 100vh !important;
+  max-height: 100vh !important;
+  overflow: hidden !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.auth-viewport-container {
+  height: calc(100vh - 64px) !important;
+  max-height: calc(100vh - 64px) !important;
+  overflow: hidden !important;
+}
+
+/* GSAP Sticky Navbar Scrolled State */
+header.sticky-top.navbar-scrolled {
+  box-shadow: 0 4px 18px rgba(14, 27, 36, 0.05);
+  border-bottom-color: #D5D0C5 !important;
+  transition: box-shadow 0.25s ease, border-color 0.25s ease;
+}
+
+/* GSAP Reveal Base Styles */
+.gsap-reveal {
+  will-change: transform, opacity;
+}

@@ -1,0 +1,103 @@
+@model InvestmentAnalysisDto
+
+<div class="card shadow-sm border-0 mb-4" id="investment-results-card">
+    <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center flex-wrap gap-2">
+        <div>
+            <h5 class="fw-bold mb-0 text-success">📊 Investment Feasibility & Returns: @Model.ProductName</h5>
+            <small class="text-muted">Multi-scenario projection based on deterministic financial math (Discount Rate: 20%).</small>
+        </div>
+        <small class="text-muted">Calculated on @Model.CreatedAtUtc.ToString("dd MMM yyyy, HH:mm") UTC</small>
+    </div>
+    <div class="card-body p-4">
+        <!-- Warnings alert if any -->
+        @if (Model.Warnings.Count > 0)
+        {
+            <div class="alert alert-warning border-warning shadow-xs mb-4">
+                <span class="fw-bold text-warning-emphasis">Financial Sensitivity Warnings:</span>
+                <ul class="mb-0 ps-3 mt-1 small">
+                    @foreach (var w in Model.Warnings)
+                    {
+                        <li>@w</li>
+                    }
+                </ul>
+            </div>
+        }
+
+        <!-- 3 Scenarios Cards Grid -->
+        <div class="row g-3 mb-4">
+            @foreach (var s in Model.Scenarios)
+            {
+                var isBase = s.Name == "Base";
+                <div class="col-md-4">
+                    <div class="card h-100 border @(isBase ? "border-primary shadow-sm" : "border-light-subtle")">
+                        <div class="card-header @(isBase ? "bg-primary text-white" : "bg-light") py-2 d-flex justify-content-between align-items-center">
+                            <span class="fw-bold">@s.Name Scenario</span>
+                            @if (isBase)
+                            {
+                                <span class="badge bg-white text-primary">Baseline</span>
+                            }
+                        </div>
+                        <div class="card-body p-3">
+                            <div class="d-flex justify-content-between py-1 border-bottom small">
+                                <span class="text-muted">Payback Period:</span>
+                                <strong>@(s.Metrics.PaybackMonths.HasValue ? $"{s.Metrics.PaybackMonths} Months" : "Not Achieved")</strong>
+                            </div>
+                            <div class="d-flex justify-content-between py-1 border-bottom small">
+                                <span class="text-muted">3-Year ROI:</span>
+                                <strong class="@(s.Metrics.RoiPercent >= 50 ? "text-success" : s.Metrics.RoiPercent > 0 ? "text-primary" : "text-danger")">
+                                    @(s.Metrics.RoiPercent.HasValue ? $"{s.Metrics.RoiPercent:N1}%" : "N/A")
+                                </strong>
+                            </div>
+                            <div class="d-flex justify-content-between py-1 border-bottom small">
+                                <span class="text-muted">Net Present Value (NPV):</span>
+                                <strong class="@(s.Metrics.Npv >= 0 ? "text-success" : "text-danger")">
+                                    @s.Metrics.Npv.ToString("N0") EGP
+                                </strong>
+                            </div>
+                            <div class="d-flex justify-content-between py-1 border-bottom small">
+                                <span class="text-muted">Unit Margin:</span>
+                                <span>@s.Metrics.UnitMarginEgp.ToString("N2") EGP (@s.Metrics.MarginPercent%)</span>
+                            </div>
+                            <div class="d-flex justify-content-between py-1 small">
+                                <span class="text-muted">Break-Even Volume:</span>
+                                <span>@(s.Metrics.BreakEvenUnitsPerMonth.HasValue ? $"{s.Metrics.BreakEvenUnitsPerMonth:N0} units/mo" : "N/A")</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+
+        <!-- Cumulative Cash Flow Chart -->
+        <div class="card border-0 bg-light p-3 mb-4">
+            <h6 class="fw-bold small text-dark mb-2">📈 Cumulative Cash Flow Trajectory (EGP)</h6>
+            <div style="height: 280px;" class="position-relative">
+                <canvas id="cashFlowChart"
+                        data-months="@Model.Scenarios[0].Metrics.CumulativeCashFlow.Count"
+                        data-conservative="@System.Text.Json.JsonSerializer.Serialize(Model.Scenarios.First(s => s.Name == "Conservative").Metrics.CumulativeCashFlow)"
+                        data-base="@System.Text.Json.JsonSerializer.Serialize(Model.Scenarios.First(s => s.Name == "Base").Metrics.CumulativeCashFlow)"
+                        data-optimistic="@System.Text.Json.JsonSerializer.Serialize(Model.Scenarios.First(s => s.Name == "Optimistic").Metrics.CumulativeCashFlow)"></canvas>
+            </div>
+        </div>
+
+        <!-- Key Risks -->
+        @if (Model.KeyRisks.Count > 0)
+        {
+            <div class="card border-0 bg-light p-3 mb-3">
+                <h6 class="fw-bold small text-dark mb-1">⚠️ Operational & Market Risks</h6>
+                <ul class="mb-0 ps-3 small text-secondary">
+                    @foreach (var rk in Model.KeyRisks)
+                    {
+                        <li>@rk</li>
+                    }
+                </ul>
+            </div>
+        }
+
+        <!-- Prominent Disclaimer -->
+        <div class="alert alert-secondary text-muted small mb-0">
+            <strong>Disclaimer:</strong> @Model.Disclaimer
+        </div>
+    </div>
+</div>
+

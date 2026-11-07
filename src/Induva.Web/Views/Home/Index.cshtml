@@ -1,0 +1,357 @@
+@{
+    ViewData["Title"] = "Industry & Investment Development Platform for Egypt";
+    ViewData["IsLandingPage"] = true;
+}
+
+<!-- SECTION 2: HERO -->
+<section class="py-5" style="background-color: #F6F4EF; padding-top: 96px !important; padding-bottom: 72px !important;">
+    <div class="container" style="max-width: 1200px;">
+        <div class="row align-items-center g-5">
+            <!-- Left Column (6 cols) -->
+            <div class="col-lg-6">
+                <span class="eyebrow mb-3 d-inline-block">EGYPT'S INDUSTRIAL NETWORK</span>
+                <h1 class="display-headline mb-4" style="font-size: 56px; line-height: 60px; font-weight: 600; letter-spacing: -0.015em; color: #0E1B24;">
+                    Turn idle capacity into new revenue.
+                </h1>
+                <p class="mb-4" style="font-size: 18px; line-height: 28px; color: #5B6670;">
+                    INDUVA connects raw materials, factories, suppliers, buyers, startups and investors across Egypt &mdash; and uses AI to find products, partners and opportunities you can't see yet.
+                </p>
+                <div class="d-flex flex-wrap gap-3 mb-4">
+                    <a asp-controller="Factories" asp-action="Index" class="btn-primary-teal">Explore factories</a>
+                    <a asp-controller="Account" asp-action="Register" class="btn-secondary-white">Create free account</a>
+                </div>
+                <div class="d-flex align-items-center gap-2 small text-muted" style="color: #5B6670;">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#2E7D5B" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="20 6 9 17 4 12"/>
+                    </svg>
+                    <span>Free to join &middot; Works for all 27 governorates</span>
+                </div>
+            </div>
+
+            <!-- Right Column (6 cols) - Frameless, Generous Image -->
+            <div class="col-lg-6 d-flex align-items-center justify-content-center justify-content-lg-end">
+                <img src="~/images/landing/hero-factory.webp" alt="Egyptian Factory Processing" class="img-fluid" style="max-height: 480px; width: 100%; max-width: 580px; object-fit: contain; border: none; outline: none; box-shadow: none;" />
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- SECTION 3: FACTS STRIP (Contained in card, does not take full page width, numbers increase on scroll) -->
+<section class="pb-5 pt-2" style="background-color: #F6F4EF;">
+    <div class="container" style="max-width: 1200px;">
+        <div id="facts-strip-card" class="bg-white border rounded-4 py-4 px-3 shadow-sm" style="border-color: #E3DFD6 !important;">
+            <div class="row g-4 text-center align-items-center">
+                <div class="col-6 col-md-3 border-end" style="border-color: #E3DFD6 !important;">
+                    <div class="d-flex align-items-center justify-content-center gap-2 mb-1">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0B5563" stroke-width="1.75"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+                        <span class="display-6 font-mono fw-bold text-dark count-up" data-target="27" style="font-size: 32px;">0</span>
+                    </div>
+                    <div class="small text-muted" style="color: #5B6670;">Governorates mapped</div>
+                </div>
+                <div class="col-6 col-md-3 border-end-md" style="border-color: #E3DFD6 !important;">
+                    <div class="d-flex align-items-center justify-content-center gap-2 mb-1">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0B5563" stroke-width="1.75"><path d="m12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83Z"/><path d="m22 17.65-9.17 4.16a2 2 0 0 1-1.66 0L2 17.65"/><path d="m22 12.65-9.17 4.16a2 2 0 0 1-1.66 0L2 12.65"/></svg>
+                        <span class="display-6 font-mono fw-bold text-dark count-up" data-target="23" style="font-size: 32px;">0</span>
+                    </div>
+                    <div class="small text-muted" style="color: #5B6670;">Raw materials tracked</div>
+                </div>
+                <div class="col-6 col-md-3 border-end" style="border-color: #E3DFD6 !important;">
+                    <div class="d-flex align-items-center justify-content-center gap-2 mb-1">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#C96A2B" stroke-width="1.75"><path d="m12 3-1.9 5.8a2 2 0 0 1-1.3 1.3L3 12l5.8 1.9a2 2 0 0 1 1.3 1.3L12 21l1.9-5.8a2 2 0 0 1 1.3-1.3L21 12l-5.8-1.9a2 2 0 0 1-1.3-1.3Z"/></svg>
+                        <span class="display-6 font-mono fw-bold text-dark count-up" data-target="5" style="font-size: 32px;">0</span>
+                    </div>
+                    <div class="small text-muted" style="color: #5B6670;">AI-assisted tools</div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="d-flex align-items-center justify-content-center gap-2 mb-1">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0B5563" stroke-width="1.75"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                        <span class="display-6 font-mono fw-bold text-dark count-up" data-target="6" style="font-size: 32px;">0</span>
+                    </div>
+                    <div class="small text-muted" style="color: #5B6670;">Participant types</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- SECTION 4: HOW IT WORKS (Beige background removed from behind each image) -->
+<section class="py-5" style="background-color: #F6F4EF; padding-top: 64px !important; padding-bottom: 80px !important;">
+    <div class="container" style="max-width: 1200px;">
+        <div class="text-center mb-5">
+            <span class="eyebrow d-block mb-2">HOW IT WORKS</span>
+            <h2 class="fw-bold" style="font-size: 30px; line-height: 36px; color: #0E1B24;">
+                From machine list to matched partners in three steps
+            </h2>
+        </div>
+
+        <div class="row g-4">
+            <!-- Step 01 -->
+            <div class="col-md-4">
+                <div class="card-induva h-100 d-flex flex-column text-start">
+                    <div class="mb-3 text-center p-2 rounded-3">
+                        <img src="~/images/landing/step-01-factory.webp" alt="Profile factory" class="img-fluid" style="max-height: 140px; object-fit: contain;" />
+                    </div>
+                    <div class="font-mono fw-bold mb-2" style="font-size: 28px; color: #0B5563;">01</div>
+                    <h3 class="fw-semibold mb-2" style="font-size: 20px; line-height: 28px; color: #0E1B24;">Profile your factory</h3>
+                    <p class="text-muted mb-0" style="font-size: 15px; line-height: 24px; color: #5B6670;">
+                        Add machines, products and the months your lines sit idle.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Step 02 -->
+            <div class="col-md-4">
+                <div class="card-induva h-100 d-flex flex-column text-start">
+                    <div class="mb-3 text-center p-2 rounded-3">
+                        <img src="~/images/landing/step-02-analysis.webp" alt="AI analysis" class="img-fluid" style="max-height: 140px; object-fit: contain;" />
+                    </div>
+                    <div class="font-mono fw-bold mb-2" style="font-size: 28px; color: #0B5563;">02</div>
+                    <h3 class="fw-semibold mb-2" style="font-size: 20px; line-height: 28px; color: #0E1B24;">Get AI analysis & ideas</h3>
+                    <p class="text-muted mb-0" style="font-size: 15px; line-height: 24px; color: #5B6670;">
+                        See your capabilities, new product options and demand outlook.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Step 03 -->
+            <div class="col-md-4">
+                <div class="card-induva h-100 d-flex flex-column text-start">
+                    <div class="mb-3 text-center p-2 rounded-3">
+                        <img src="~/images/landing/step-03-matching.webp" alt="Match and connect" class="img-fluid" style="max-height: 140px; object-fit: contain;" />
+                    </div>
+                    <div class="font-mono fw-bold mb-2" style="font-size: 28px; color: #0B5563;">03</div>
+                    <h3 class="fw-semibold mb-2" style="font-size: 20px; line-height: 28px; color: #0E1B24;">Match and connect</h3>
+                    <p class="text-muted mb-0" style="font-size: 15px; line-height: 24px; color: #5B6670;">
+                        Reach suppliers, buyers and investors that fit &mdash; ranked by score and distance.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- SECTION 5: FEATURES GRID -->
+<section class="py-5 bg-white border-top border-bottom" style="border-color: #E3DFD6 !important; padding-top: 80px !important; padding-bottom: 80px !important;">
+    <div class="container" style="max-width: 1200px;">
+        <div class="text-center mb-5">
+            <h2 class="fw-bold" style="font-size: 30px; line-height: 36px; color: #0E1B24;">
+                Everything between raw material and market
+            </h2>
+        </div>
+
+        <div class="row g-4">
+            <!-- Feature 1 -->
+            <div class="col-md-6 col-lg-4">
+                <div class="card-induva h-100 d-flex flex-column">
+                    <div class="d-inline-flex align-items-center justify-content-center rounded-3 mb-3" style="width: 44px; height: 44px; background-color: #E3F1F3;">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0B5563" stroke-width="1.75"><path d="m3 6 6-3 6 3 6-3v15l-6 3-6-3-6 3Z"/><path d="M9 3v15"/><path d="M15 6v15"/></svg>
+                    </div>
+                    <h3 class="fw-semibold mb-2" style="font-size: 20px; line-height: 28px; color: #0E1B24;">Resource & opportunity map</h3>
+                    <p class="text-muted flex-grow-1" style="font-size: 15px; line-height: 24px; color: #5B6670;">
+                        See factories, suppliers and raw materials across all governorates.
+                    </p>
+                    <a asp-controller="Map" asp-action="Index" class="fw-semibold text-decoration-none mt-2" style="color: #0B5563; font-size: 15px;">Learn more &rarr;</a>
+                </div>
+            </div>
+
+            <!-- Feature 2 -->
+            <div class="col-md-6 col-lg-4">
+                <div class="card-induva h-100 d-flex flex-column">
+                    <div class="d-inline-flex align-items-center justify-content-center rounded-3 mb-3" style="width: 44px; height: 44px; background-color: #E3F1F3;">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0B5563" stroke-width="1.75"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                    </div>
+                    <h3 class="fw-semibold mb-2" style="font-size: 20px; line-height: 28px; color: #0E1B24;">Idle capacity marketplace</h3>
+                    <p class="text-muted flex-grow-1" style="font-size: 15px; line-height: 24px; color: #5B6670;">
+                        Put seasonal downtime to work with new orders and partners.
+                    </p>
+                    <a asp-controller="Factories" asp-action="Index" class="fw-semibold text-decoration-none mt-2" style="color: #0B5563; font-size: 15px;">Learn more &rarr;</a>
+                </div>
+            </div>
+
+            <!-- Feature 3 (AI) -->
+            <div class="col-md-6 col-lg-4">
+                <div class="card-induva h-100 d-flex flex-column">
+                    <div class="d-inline-flex align-items-center justify-content-center rounded-3 mb-3" style="width: 44px; height: 44px; background-color: #FBEBDD;">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#C96A2B" stroke-width="1.75"><path d="m12 3-1.9 5.8a2 2 0 0 1-1.3 1.3L3 12l5.8 1.9a2 2 0 0 1 1.3 1.3L12 21l1.9-5.8a2 2 0 0 1 1.3-1.3L21 12l-5.8-1.9a2 2 0 0 1-1.3-1.3Z"/></svg>
+                    </div>
+                    <h3 class="fw-semibold mb-2" style="font-size: 20px; line-height: 28px; color: #0E1B24;">New product discovery</h3>
+                    <p class="text-muted flex-grow-1" style="font-size: 15px; line-height: 24px; color: #5B6670;">
+                        AI suggests products your existing machines can already make.
+                    </p>
+                    <a asp-controller="ProductSuggestions" asp-action="Index" class="fw-semibold text-decoration-none mt-2" style="color: #0B5563; font-size: 15px;">Learn more &rarr;</a>
+                </div>
+            </div>
+
+            <!-- Feature 4 -->
+            <div class="col-md-6 col-lg-4">
+                <div class="card-induva h-100 d-flex flex-column">
+                    <div class="d-inline-flex align-items-center justify-content-center rounded-3 mb-3" style="width: 44px; height: 44px; background-color: #E3F1F3;">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0B5563" stroke-width="1.75"><circle cx="18" cy="18" r="3"/><circle cx="6" cy="6" r="3"/><path d="M6 9v12"/><path d="M18 9a9 9 0 0 1-9 9"/></svg>
+                    </div>
+                    <h3 class="fw-semibold mb-2" style="font-size: 20px; line-height: 28px; color: #0E1B24;">Supply & demand matching</h3>
+                    <p class="text-muted flex-grow-1" style="font-size: 15px; line-height: 24px; color: #5B6670;">
+                        Rules plus AI rank the best suppliers, buyers and investors.
+                    </p>
+                    <a asp-controller="Matching" asp-action="Index" class="fw-semibold text-decoration-none mt-2" style="color: #0B5563; font-size: 15px;">Learn more &rarr;</a>
+                </div>
+            </div>
+
+            <!-- Feature 5 -->
+            <div class="col-md-6 col-lg-4">
+                <div class="card-induva h-100 d-flex flex-column">
+                    <div class="d-inline-flex align-items-center justify-content-center rounded-3 mb-3" style="width: 44px; height: 44px; background-color: #E3F1F3;">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0B5563" stroke-width="1.75"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/></svg>
+                    </div>
+                    <h3 class="fw-semibold mb-2" style="font-size: 20px; line-height: 28px; color: #0E1B24;">Startups meet investors</h3>
+                    <p class="text-muted flex-grow-1" style="font-size: 15px; line-height: 24px; color: #5B6670;">
+                        Pitch ideas, filter by sector and stage, connect directly.
+                    </p>
+                    <a asp-controller="Startups" asp-action="Index" class="fw-semibold text-decoration-none mt-2" style="color: #0B5563; font-size: 15px;">Learn more &rarr;</a>
+                </div>
+            </div>
+
+            <!-- Feature 6 (AI) -->
+            <div class="col-md-6 col-lg-4">
+                <div class="card-induva h-100 d-flex flex-column">
+                    <div class="d-inline-flex align-items-center justify-content-center rounded-3 mb-3" style="width: 44px; height: 44px; background-color: #FBEBDD;">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#C96A2B" stroke-width="1.75"><rect width="16" height="20" x="4" y="2" rx="2"/><line x1="8" x2="16" y1="6" y2="6"/><line x1="16" x2="16" y1="14" y2="18"/><path d="M16 10h.01"/><path d="M12 10h.01"/><path d="M8 10h.01"/><path d="M12 14h.01"/><path d="M8 14h.01"/><path d="M12 18h.01"/><path d="M8 18h.01"/></svg>
+                    </div>
+                    <h3 class="fw-semibold mb-2" style="font-size: 20px; line-height: 28px; color: #0E1B24;">Investment feasibility</h3>
+                    <p class="text-muted flex-grow-1" style="font-size: 15px; line-height: 24px; color: #5B6670;">
+                        Edit the assumptions and see payback, ROI and scenarios instantly.
+                    </p>
+                    <a asp-controller="Investments" asp-action="Index" class="fw-semibold text-decoration-none mt-2" style="color: #0B5563; font-size: 15px;">Learn more &rarr;</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- SECTION 6: WHO IT'S FOR (Updated Factory Owners Image from Downloads) -->
+<section class="py-5" style="background-color: #F6F4EF; padding-top: 80px !important; padding-bottom: 80px !important;">
+    <div class="container" style="max-width: 1200px;">
+        <div class="text-center mb-5">
+            <h2 class="fw-bold" style="font-size: 30px; line-height: 36px; color: #0E1B24;">
+                Built for every link in the chain
+            </h2>
+        </div>
+
+        <div class="row g-3">
+            <!-- 1. Factory owners (Replaced with new isometric factory image) -->
+            <div class="col">
+                <div class="card-induva h-100 text-center p-3">
+                    <div class="mb-3 d-flex align-items-center justify-content-center" style="height: 60px;">
+                        <img src="~/images/landing/مصنع صناعي بتصميم إيزومتري.webp" alt="Factory owners" class="img-fluid" style="max-height: 58px; object-fit: contain;" />
+                    </div>
+                    <div class="fw-semibold text-dark small mb-1" style="font-size: 14px;">Factory owners</div>
+                    <div class="small text-muted" style="font-size: 12px; color: #5B6670;">Fill idle capacity</div>
+                </div>
+            </div>
+
+            <!-- 2. Suppliers -->
+            <div class="col">
+                <div class="card-induva h-100 text-center p-3">
+                    <div class="mb-3 d-flex align-items-center justify-content-center" style="height: 60px;">
+                        <img src="~/images/landing/who-suppliers.webp" alt="Suppliers" class="img-fluid" style="max-height: 54px; object-fit: contain;" />
+                    </div>
+                    <div class="fw-semibold text-dark small mb-1" style="font-size: 14px;">Suppliers</div>
+                    <div class="small text-muted" style="font-size: 12px; color: #5B6670;">Reach new factories</div>
+                </div>
+            </div>
+
+            <!-- 3. Startups -->
+            <div class="col">
+                <div class="card-induva h-100 text-center p-3">
+                    <div class="mb-3 d-flex align-items-center justify-content-center" style="height: 60px;">
+                        <img src="~/images/landing/who-startups.webp" alt="Startups" class="img-fluid" style="max-height: 54px; object-fit: contain;" />
+                    </div>
+                    <div class="fw-semibold text-dark small mb-1" style="font-size: 14px;">Startups</div>
+                    <div class="small text-muted" style="font-size: 12px; color: #5B6670;">Find makers and funding</div>
+                </div>
+            </div>
+
+            <!-- 4. Investors -->
+            <div class="col">
+                <div class="card-induva h-100 text-center p-3">
+                    <div class="mb-3 d-flex align-items-center justify-content-center" style="height: 60px;">
+                        <img src="~/images/landing/who-investors.webp" alt="Investors" class="img-fluid" style="max-height: 54px; object-fit: contain;" />
+                    </div>
+                    <div class="fw-semibold text-dark small mb-1" style="font-size: 14px;">Investors</div>
+                    <div class="small text-muted" style="font-size: 12px; color: #5B6670;">Discover vetted fits</div>
+                </div>
+            </div>
+
+            <!-- 5. Buyers -->
+            <div class="col">
+                <div class="card-induva h-100 text-center p-3">
+                    <div class="mb-3 d-flex align-items-center justify-content-center" style="height: 60px;">
+                        <img src="~/images/landing/who-buyers.webp" alt="Buyers" class="img-fluid" style="max-height: 54px; object-fit: contain;" />
+                    </div>
+                    <div class="fw-semibold text-dark small mb-1" style="font-size: 14px;">Buyers</div>
+                    <div class="small text-muted" style="font-size: 12px; color: #5B6670;">Post demand, find producers</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- SECTION 7: EXAMPLE BAND -->
+<section class="py-5" style="background-color: #0E1B24; color: #FFFFFF; padding-top: 80px !important; padding-bottom: 80px !important;">
+    <div class="container" style="max-width: 1200px;">
+        <div class="row align-items-center g-5">
+            <div class="col-lg-6">
+                <span class="eyebrow d-block mb-3" style="color: #4EA5B3;">EXAMPLE</span>
+                <h2 class="display-6 fw-bold text-white mb-3" style="font-size: 32px; line-height: 40px;">
+                    A tomato canner that sits idle five months a year
+                </h2>
+                <p class="mb-4" style="color: #A4B3C0; font-size: 16px; line-height: 26px;">
+                    INDUVA analyzes its machines, suggests sauces and jams, forecasts the demand peaks, and matches it with a grower cooperative and a buyer.
+                </p>
+
+                <!-- 4-Step Process Flow -->
+                <div class="d-flex flex-wrap align-items-center gap-2">
+                    <span class="badge border py-2 px-3 fw-medium" style="border-color: rgba(255,255,255,0.2) !important; background-color: rgba(255,255,255,0.05); color: #FFFFFF; font-size: 13px;">
+                        Idle Oct&ndash;Feb
+                    </span>
+                    <span style="color: #4EA5B3;">&rarr;</span>
+                    <span class="badge border py-2 px-3 fw-medium" style="border-color: rgba(255,255,255,0.2) !important; background-color: rgba(255,255,255,0.05); color: #FFFFFF; font-size: 13px;">
+                        New product ideas
+                    </span>
+                    <span style="color: #4EA5B3;">&rarr;</span>
+                    <span class="badge border py-2 px-3 fw-medium" style="border-color: rgba(255,255,255,0.2) !important; background-color: rgba(255,255,255,0.05); color: #FFFFFF; font-size: 13px;">
+                        Demand forecast
+                    </span>
+                    <span style="color: #4EA5B3;">&rarr;</span>
+                    <span class="badge border py-2 px-3 fw-medium" style="border-color: rgba(255,255,255,0.2) !important; background-color: rgba(255,255,255,0.05); color: #FFFFFF; font-size: 13px;">
+                        Matched partners
+                    </span>
+                </div>
+            </div>
+
+            <div class="col-lg-6 text-center">
+                <img src="~/images/landing/example-canning.webp" alt="Tomato canning isometric production line" class="img-fluid rounded-4 shadow" style="max-height: 320px; object-fit: contain;" />
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- SECTION 8: FINAL CTA -->
+<section class="py-5" style="background-color: #F6F4EF; padding-top: 96px !important; padding-bottom: 96px !important;">
+    <div class="container" style="max-width: 800px;">
+        <div class="card-induva text-center p-5 position-relative overflow-hidden shadow-sm" style="background-color: #FFFFFF; border-radius: 16px;">
+            <div class="position-relative" style="z-index: 2;">
+                <h2 class="fw-bold mb-2" style="font-size: 32px; color: #0E1B24;">Start with your factory profile</h2>
+                <p class="text-muted mb-4" style="font-size: 16px; color: #5B6670;">It takes about five minutes.</p>
+                <div class="d-flex justify-content-center gap-3 flex-wrap">
+                    <a asp-controller="Account" asp-action="Register" class="btn-primary-teal">Create free account</a>
+                    <a asp-controller="Map" asp-action="Index" class="btn-secondary-white">Browse the map</a>
+                </div>
+            </div>
+
+            <!-- Skyline illustration decoration at bottom of card -->
+            <div class="mt-4 pt-3 opacity-25">
+                <img src="~/images/landing/cta-skyline.webp" alt="Egyptian Industrial Skyline" class="img-fluid" style="max-height: 90px; width: 100%; object-fit: cover; object-position: bottom;" />
+            </div>
+        </div>
+    </div>
+</section>

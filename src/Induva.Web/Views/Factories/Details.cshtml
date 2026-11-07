@@ -1,0 +1,476 @@
+@model FactoryDetailsDto
+@{
+    ViewData["Title"] = Model.Name;
+    var rawMaterials = ViewBag.RawMaterials as IEnumerable<SelectListItem> ?? [];
+}
+
+<div class="mb-4">
+    <div class="d-flex justify-content-between align-items-start flex-wrap gap-2">
+        <div>
+            <div class="d-flex align-items-center gap-2 mb-1">
+                <h1 class="fw-bold mb-0">@Model.Name</h1>
+                @if (!Model.IsPublic)
+                {
+                    <span class="badge bg-secondary">Private Profile</span>
+                }
+            </div>
+            <p class="text-muted mb-0">
+                <span class="badge bg-primary-subtle text-primary border me-1">@Model.Sector</span>
+                <span>📍 @Model.GovernorateName</span>
+                <span class="mx-2">·</span>
+                <span>Capacity Utilization: <strong>@Model.UtilizationPercent%</strong></span>
+            </p>
+        </div>
+        @if (Model.IsOwner)
+        {
+            <div class="d-flex gap-2">
+                <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-outline-secondary btn-sm">Edit Factory</a>
+                <form asp-action="Delete" asp-route-id="@Model.Id" method="post"
+                      onsubmit="return confirm('Are you sure you want to delete this factory profile? All associated machines and data will be removed.');"
+                      class="d-inline">
+                    <button type="submit" class="btn btn-outline-danger btn-sm">Delete Factory</button>
+                </form>
+            </div>
+        }
+        else if (!string.IsNullOrEmpty(Model.OwnerUserId))
+        {
+            <partial name="_ConnectButtonAndModal" model="@(new SendConnectionModalViewModel {
+                ToUserId = Model.OwnerUserId,
+                RelatedType = MatchEntityType.Factory,
+                RelatedId = Model.Id,
+                TargetTitle = Model.Name,
+                Message = $"Hello, I am interested in subcontracting or partnership with {Model.Name} through INDUVA."
+            })" />
+        }
+    </div>
+
+    @if (!string.IsNullOrWhiteSpace(Model.Description))
+    {
+        <div class="card shadow-sm border-0 mt-3">
+            <div class="card-body">
+                <h6 class="fw-bold text-uppercase text-muted small mb-2">About Facility</h6>
+                <p class="mb-0 text-secondary">@Model.Description</p>
+            </div>
+        </div>
+    }
+</div>
+
+<!-- AI Capability Profile Card (M2 Integration Anchor) -->
+<div class="card shadow-sm border-primary-subtle mb-4">
+    <div class="card-body p-4">
+        <div class="d-flex justify-content-between align-items-start flex-wrap gap-2">
+            <div>
+                <h5 class="card-title fw-bold text-primary mb-1">🤖 AI Capability Analysis</h5>
+                <p class="small text-muted mb-0">
+                    AI-generated capability assessment grounded in your registered machines and Egyptian market parameters.
+                </p>
+            </div>
+            @if (Model.IsOwner)
+            {
+                <button class="btn btn-primary"
+                        data-ai-url="/factories/@Model.Id/analysis"
+                        data-ai-target="#analysis-result"
+                        @(Model.Machines.Count == 0 ? "disabled" : "")>
+                    Analyze My Factory
+                </button>
+            }
+        </div>
+
+        <div id="analysis-result" class="mt-3">
+            @if (!string.IsNullOrWhiteSpace(Model.CapabilitySummary))
+            {
+                <div class="alert alert-light border mb-0">
+                    <p class="mb-2">@Model.CapabilitySummary</p>
+                    @if (Model.CapabilityTags.Count > 0)
+                    {
+                        <div class="d-flex flex-wrap gap-1">
+                            @foreach (var tag in Model.CapabilityTags)
+                            {
+                                <span class="badge bg-secondary-subtle text-secondary border">@tag</span>
+                            }
+                        </div>
+                    }
+                </div>
+            }
+            else if (Model.Machines.Count == 0 && Model.IsOwner)
+            {
+                <div class="text-muted small">
+                    <em>Add at least one machine below to unlock AI capability analysis.</em>
+                </div>
+            }
+            else
+            {
+                <div class="text-muted small">
+                    <em>Click "Analyze My Factory" to generate a verified capability profile and standardized tags.</em>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<!-- AI Product Suggestions Card (M4 F2 Integration Anchor) -->
+<div class="card shadow-sm border-info-subtle mb-4">
+    <div class="card-body p-4">
+        <div class="d-flex justify-content-between align-items-start flex-wrap gap-2">
+            <div>
+                <h5 class="card-title fw-bold text-info-emphasis mb-1">💡 AI Alternative Product Opportunities (F2)</h5>
+                <p class="small text-muted mb-0">
+                    Discover high-margin products your facility can manufacture using existing machinery and idle capacity windows.
+                </p>
+            </div>
+            @if (Model.IsOwner)
+            {
+                <button class="btn btn-outline-primary"
+                        data-ai-url="/factories/@Model.Id/suggestions"
+                        data-ai-target="#suggestions-result"
+                        @(string.IsNullOrWhiteSpace(Model.CapabilitySummary) ? "disabled" : "")>
+                    Suggest Alternative Products
+                </button>
+            }
+        </div>
+
+        <div id="suggestions-result" class="mt-3">
+            @if (string.IsNullOrWhiteSpace(Model.CapabilitySummary) && Model.IsOwner)
+            {
+                <div class="text-muted small">
+                    <em>Run "Analyze My Factory" above first to enable AI product suggestions.</em>
+                </div>
+            }
+            else if (Model.IsOwner)
+            {
+                <div class="text-muted small">
+                    <em>Click "Suggest Alternative Products" to generate market-validated opportunities with unit economics.</em>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<!-- Child Entities: Machines, Idle Windows, Products, Material Needs -->
+<div class="row g-4">
+    <!-- Machines -->
+    <div class="col-lg-6">
+        <div class="card shadow-sm border-0 h-100">
+            <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
+                <h6 class="fw-bold mb-0">⚙️ Machinery & Equipment (@Model.Machines.Count)</h6>
+                @if (Model.IsOwner)
+                {
+                    <button class="btn btn-sm btn-outline-primary" data-bs-toggle="collapse" data-bs-target="#addMachineCollapse">
+                        + Add Machine
+                    </button>
+                }
+            </div>
+            <div class="card-body p-3">
+                @if (Model.IsOwner)
+                {
+                    <div class="collapse mb-3 p-3 bg-light rounded border" id="addMachineCollapse">
+                        <h6 class="fw-bold small mb-2">New Machine</h6>
+                        <form asp-action="AddMachine" asp-route-id="@Model.Id" method="post">
+                            <div class="row g-2 mb-2">
+                                <div class="col-7">
+                                    <input name="Name" class="form-control form-control-sm" placeholder="Machine Name (required)" required />
+                                </div>
+                                <div class="col-5">
+                                    <input name="MachineType" class="form-control form-control-sm" placeholder="Type / Model" />
+                                </div>
+                            </div>
+                            <div class="row g-2 mb-2">
+                                <div class="col-4">
+                                    <input name="Quantity" type="number" min="1" value="1" class="form-control form-control-sm" placeholder="Qty" required />
+                                </div>
+                                <div class="col-4">
+                                    <input name="CapacityPerHour" type="number" step="any" class="form-control form-control-sm" placeholder="Capacity/hr" />
+                                </div>
+                                <div class="col-4">
+                                    <input name="CapacityUnit" class="form-control form-control-sm" placeholder="Unit (kg, pcs)" />
+                                </div>
+                            </div>
+                            <div class="mb-2">
+                                <input name="Description" class="form-control form-control-sm" placeholder="Notes / specifications" />
+                            </div>
+                            <button type="submit" class="btn btn-sm btn-primary">Save Machine</button>
+                        </form>
+                    </div>
+                }
+
+                @if (Model.Machines.Count == 0)
+                {
+                    <p class="text-muted small mb-0">No machinery registered yet.</p>
+                }
+                else
+                {
+                    <div class="table-responsive">
+                        <table class="table table-sm table-hover align-middle mb-0">
+                            <thead>
+                                <tr class="text-muted small">
+                                    <th>Name</th>
+                                    <th>Qty</th>
+                                    <th>Capacity</th>
+                                    @if (Model.IsOwner) { <th style="width: 40px;"></th> }
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var m in Model.Machines)
+                                {
+                                    <tr>
+                                        <td>
+                                            <div class="fw-semibold">@m.Name</div>
+                                            @if (!string.IsNullOrEmpty(m.MachineType))
+                                            {
+                                                <div class="small text-muted">@m.MachineType</div>
+                                            }
+                                        </td>
+                                        <td>@m.Quantity</td>
+                                        <td>@(m.CapacityPerHour.HasValue ? $"{m.CapacityPerHour} {m.CapacityUnit}/hr" : "-")</td>
+                                        @if (Model.IsOwner)
+                                        {
+                                            <td>
+                                                <form asp-action="RemoveMachine" asp-route-id="@Model.Id" asp-route-machineId="@m.Id" method="post"
+                                                      onsubmit="return confirm('Remove this machine?');">
+                                                    <button type="submit" class="btn btn-link text-danger p-0">✕</button>
+                                                </form>
+                                            </td>
+                                        }
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+    <!-- Idle Windows -->
+    <div class="col-lg-6">
+        <div class="card shadow-sm border-0 h-100">
+            <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
+                <h6 class="fw-bold mb-0">⏳ Idle Capacity Periods (@Model.IdleWindows.Count)</h6>
+                @if (Model.IsOwner)
+                {
+                    <button class="btn btn-sm btn-outline-primary" data-bs-toggle="collapse" data-bs-target="#addIdleCollapse">
+                        + Add Idle Window
+                    </button>
+                }
+            </div>
+            <div class="card-body p-3">
+                @if (Model.IsOwner)
+                {
+                    <div class="collapse mb-3 p-3 bg-light rounded border" id="addIdleCollapse">
+                        <h6 class="fw-bold small mb-2">New Idle Period</h6>
+                        <form asp-action="AddIdleWindow" asp-route-id="@Model.Id" method="post">
+                            <div class="row g-2 mb-2">
+                                <div class="col-4">
+                                    <label class="form-label small mb-0">Start Month</label>
+                                    <input name="StartMonth" type="number" min="1" max="12" value="1" class="form-control form-control-sm" required />
+                                </div>
+                                <div class="col-4">
+                                    <label class="form-label small mb-0">End Month</label>
+                                    <input name="EndMonth" type="number" min="1" max="12" value="3" class="form-control form-control-sm" required />
+                                </div>
+                                <div class="col-4">
+                                    <label class="form-label small mb-0">Available %</label>
+                                    <input name="AvailableCapacityPercent" type="number" min="1" max="100" value="50" class="form-control form-control-sm" required />
+                                </div>
+                            </div>
+                            <div class="mb-2">
+                                <input name="Note" class="form-control form-control-sm" placeholder="e.g. Post-harvest seasonal shutdown" />
+                            </div>
+                            <button type="submit" class="btn btn-sm btn-primary">Save Period</button>
+                        </form>
+                    </div>
+                }
+
+                @if (Model.IdleWindows.Count == 0)
+                {
+                    <p class="text-muted small mb-0">No idle periods configured. Factory runs on consistent schedule.</p>
+                }
+                else
+                {
+                    <div class="table-responsive">
+                        <table class="table table-sm table-hover align-middle mb-0">
+                            <thead>
+                                <tr class="text-muted small">
+                                    <th>Months</th>
+                                    <th>Available Free Capacity</th>
+                                    <th>Notes</th>
+                                    @if (Model.IsOwner) { <th style="width: 40px;"></th> }
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var w in Model.IdleWindows)
+                                {
+                                    <tr>
+                                        <td>Month @w.StartMonth &rarr; Month @w.EndMonth</td>
+                                        <td><span class="badge bg-success-subtle text-success border">@w.AvailableCapacityPercent% Free</span></td>
+                                        <td class="small text-muted">@(w.Note ?? "-")</td>
+                                        @if (Model.IsOwner)
+                                        {
+                                            <td>
+                                                <form asp-action="RemoveIdleWindow" asp-route-id="@Model.Id" asp-route-windowId="@w.Id" method="post"
+                                                      onsubmit="return confirm('Remove this idle period?');">
+                                                    <button type="submit" class="btn btn-link text-danger p-0">✕</button>
+                                                </form>
+                                            </td>
+                                        }
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+    <!-- Products -->
+    <div class="col-lg-6">
+        <div class="card shadow-sm border-0 h-100">
+            <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
+                <h6 class="fw-bold mb-0">🏷️ Current Products (@Model.Products.Count)</h6>
+                @if (Model.IsOwner)
+                {
+                    <button class="btn btn-sm btn-outline-primary" data-bs-toggle="collapse" data-bs-target="#addProductCollapse">
+                        + Add Product
+                    </button>
+                }
+            </div>
+            <div class="card-body p-3">
+                @if (Model.IsOwner)
+                {
+                    <div class="collapse mb-3 p-3 bg-light rounded border" id="addProductCollapse">
+                        <h6 class="fw-bold small mb-2">New Product</h6>
+                        <form asp-action="AddProduct" asp-route-id="@Model.Id" method="post">
+                            <div class="row g-2 mb-2">
+                                <div class="col-7">
+                                    <input name="Name" class="form-control form-control-sm" placeholder="Product Name (required)" required />
+                                </div>
+                                <div class="col-5">
+                                    <input name="Category" class="form-control form-control-sm" placeholder="Category" />
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-sm btn-primary">Save Product</button>
+                        </form>
+                    </div>
+                }
+
+                @if (Model.Products.Count == 0)
+                {
+                    <p class="text-muted small mb-0">No current products listed.</p>
+                }
+                else
+                {
+                    <div class="table-responsive">
+                        <table class="table table-sm table-hover align-middle mb-0">
+                            <thead>
+                                <tr class="text-muted small">
+                                    <th>Product</th>
+                                    <th>Category</th>
+                                    @if (Model.IsOwner) { <th style="width: 40px;"></th> }
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var p in Model.Products)
+                                {
+                                    <tr>
+                                        <td class="fw-semibold">@p.Name</td>
+                                        <td class="text-muted small">@(p.Category ?? "-")</td>
+                                        @if (Model.IsOwner)
+                                        {
+                                            <td>
+                                                <form asp-action="RemoveProduct" asp-route-id="@Model.Id" asp-route-productId="@p.Id" method="post"
+                                                      onsubmit="return confirm('Remove this product?');">
+                                                    <button type="submit" class="btn btn-link text-danger p-0">✕</button>
+                                                </form>
+                                            </td>
+                                        }
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+    <!-- Raw Material Needs -->
+    <div class="col-lg-6">
+        <div class="card shadow-sm border-0 h-100">
+            <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
+                <h6 class="fw-bold mb-0">🌾 Raw Material Needs (@Model.MaterialNeeds.Count)</h6>
+                @if (Model.IsOwner)
+                {
+                    <button class="btn btn-sm btn-outline-primary" data-bs-toggle="collapse" data-bs-target="#addMaterialCollapse">
+                        + Add Material Need
+                    </button>
+                }
+            </div>
+            <div class="card-body p-3">
+                @if (Model.IsOwner)
+                {
+                    <div class="collapse mb-3 p-3 bg-light rounded border" id="addMaterialCollapse">
+                        <h6 class="fw-bold small mb-2">New Raw Material Requirement</h6>
+                        <form asp-action="AddMaterialNeed" asp-route-id="@Model.Id" method="post">
+                            <div class="row g-2 mb-2">
+                                <div class="col-7">
+                                    <select name="RawMaterialId" class="form-select form-select-sm" required>
+                                        <option value="">Select Raw Material...</option>
+                                        @foreach (var m in rawMaterials)
+                                        {
+                                            <option value="@m.Value">@m.Text</option>
+                                        }
+                                    </select>
+                                </div>
+                                <div class="col-5">
+                                    <input name="MonthlyTons" type="number" step="any" min="0" class="form-control form-control-sm" placeholder="Monthly Tons" />
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-sm btn-primary">Save Need</button>
+                        </form>
+                    </div>
+                }
+
+                @if (Model.MaterialNeeds.Count == 0)
+                {
+                    <p class="text-muted small mb-0">No raw material requirements specified.</p>
+                }
+                else
+                {
+                    <div class="table-responsive">
+                        <table class="table table-sm table-hover align-middle mb-0">
+                            <thead>
+                                <tr class="text-muted small">
+                                    <th>Material</th>
+                                    <th>Monthly Quantity</th>
+                                    @if (Model.IsOwner) { <th style="width: 40px;"></th> }
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var n in Model.MaterialNeeds)
+                                {
+                                    <tr>
+                                        <td class="fw-semibold">@n.RawMaterialName</td>
+                                        <td class="text-muted small">@(n.MonthlyTons.HasValue ? $"{n.MonthlyTons} Tons/mo" : "Flexible")</td>
+                                        @if (Model.IsOwner)
+                                        {
+                                            <td>
+                                                <form asp-action="RemoveMaterialNeed" asp-route-id="@Model.Id" asp-route-needId="@n.Id" method="post"
+                                                      onsubmit="return confirm('Remove this material need?');">
+                                                    <button type="submit" class="btn btn-link text-danger p-0">✕</button>
+                                                </form>
+                                            </td>
+                                        }
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+
+

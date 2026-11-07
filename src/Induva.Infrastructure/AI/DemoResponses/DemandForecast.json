@@ -1,0 +1,17 @@
+{
+  "trend": "Rising",
+  "monthlyIndex": [45.0, 52.0, 68.0, 95.0, 100.0, 85.0, 70.0, 60.0, 55.0, 50.0, 48.0, 46.0],
+  "peakMonths": [4, 5],
+  "drivers": [
+    "Ramadan and Eid festive consumption increase food packaging requirements",
+    "Spring citrus export harvest driving agricultural logistics containers",
+    "Expansion of domestic food processing facilities in 10th of Ramadan and Sadat City"
+  ],
+  "assumptions": [
+    "Stable national currency and raw resin import supplies",
+    "Seasonal agricultural calendar follows historical Egyptian patterns"
+  ],
+  "dataBasis": "Mixed",
+  "confidence": 0.82
+}
+

@@ -1,0 +1,40 @@
+{
+  "suggestions": [
+    {
+      "name": "Heavy Duty Packaging Crates",
+      "category": "Packaging",
+      "rationale": "High domestic demand from logistics hubs; utilizes idle injection molding machines.",
+      "requiredMachines": ["Injection Molding Machine 250T"],
+      "requiredRawMaterials": ["Polypropylene", "High-Density Polyethylene"],
+      "requiredCapabilityTags": ["injection-molding"],
+      "estUnitCostEgp": 45.0,
+      "estUnitPriceEgp": 75.0,
+      "estMonthlyVolume": 5000,
+      "demandLevel": "High",
+      "seasonalityNote": "Surges during agricultural export season (Nov-Apr)",
+      "confidence": 0.88,
+      "risks": ["Price fluctuations in imported resin"]
+    },
+    {
+      "name": "Food Storage Containers (5L)",
+      "category": "Plastics",
+      "rationale": "Year-round demand in food processing sector with steady local consumer base.",
+      "requiredMachines": ["Injection Molding Machine 250T"],
+      "requiredRawMaterials": ["Food-Grade Polypropylene"],
+      "requiredCapabilityTags": ["injection-molding", "food-packaging"],
+      "estUnitCostEgp": 18.0,
+      "estUnitPriceEgp": 32.0,
+      "estMonthlyVolume": 12000,
+      "demandLevel": "High",
+      "seasonalityNote": "Ramadan peak in Q1",
+      "confidence": 0.85,
+      "risks": ["Requires food-grade ISO compliance certification"]
+    }
+  ],
+  "assumptions": [
+    "Raw resin purchased in wholesale batches from local Alexandria suppliers",
+    "Single 8-hour shift running during currently registered idle periods",
+    "Standard Egyptian VAT and freight costs accounted in unit pricing"
+  ]
+}
+

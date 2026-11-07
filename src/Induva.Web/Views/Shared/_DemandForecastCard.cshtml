@@ -1,0 +1,92 @@
+@model DemandForecastDto
+
+<div class="card shadow-sm border-0 mb-4" id="forecast-card-@Model.Id">
+    <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center flex-wrap gap-2">
+        <div>
+            <div class="d-flex align-items-center gap-2 mb-1">
+                <h5 class="fw-bold mb-0 text-primary">📈 Demand Forecast: @Model.ProductName</h5>
+                <span class="badge @(Model.Trend == "Rising" ? "bg-success" : Model.Trend == "Falling" ? "bg-danger" : "bg-primary")">
+                    @Model.Trend Trend
+                </span>
+            </div>
+            <p class="small text-muted mb-0">
+                Horizon: @Model.HorizonMonths Months
+                @if (!string.IsNullOrEmpty(Model.GovernorateName))
+                {
+                    <span>· 📍 @Model.GovernorateName</span>
+                }
+            </p>
+        </div>
+        <div class="d-flex align-items-center gap-2">
+            <span class="badge @(Model.DataBasis == "PlatformData" ? "bg-success-subtle text-success border" : Model.DataBasis == "Mixed" ? "bg-primary-subtle text-primary border" : "bg-secondary-subtle text-secondary border")" title="Grounding basis">
+                Basis: @Model.DataBasis
+            </span>
+            @if (Model.FromCache)
+            {
+                <span class="badge bg-light text-muted border">Cached</span>
+            }
+        </div>
+    </div>
+    <div class="card-body p-4">
+        <!-- Chart Container -->
+        <div class="mb-4 position-relative" style="height: 280px;">
+            <canvas id="forecastChart"
+                    data-labels="@System.Text.Json.JsonSerializer.Serialize(Model.MonthLabels)"
+                    data-values="@System.Text.Json.JsonSerializer.Serialize(Model.MonthlyIndex)"></canvas>
+        </div>
+
+        <p class="text-center small text-muted fst-italic mb-3">
+            ⚠️ AI estimate — based on limited platform historical inquiries and Egyptian macroeconomic factors.
+        </p>
+
+        <!-- Insights Grid -->
+        <div class="row g-3">
+            <div class="col-md-6">
+                <div class="border rounded p-3 bg-light h-100">
+                    <h6 class="fw-bold small mb-2 text-dark">🚀 Market Demand Drivers</h6>
+                    @if (Model.Drivers.Count == 0)
+                    {
+                        <p class="small text-muted mb-0">No specific demand drivers reported.</p>
+                    }
+                    else
+                    {
+                        <ul class="small text-secondary mb-0 ps-3">
+                            @foreach (var d in Model.Drivers)
+                            {
+                                <li>@d</li>
+                            }
+                        </ul>
+                    }
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="border rounded p-3 bg-light h-100">
+                    <h6 class="fw-bold small mb-2 text-dark">📌 Assumptions & Seasonality</h6>
+                    @if (Model.PeakMonths.Count > 0)
+                    {
+                        <div class="mb-2">
+                            <span class="small fw-semibold text-muted">Peak Activity Months:</span>
+                            <div class="d-flex flex-wrap gap-1 mt-1">
+                                @foreach (var pm in Model.PeakMonths)
+                                {
+                                    <span class="badge bg-warning text-dark">Month @pm</span>
+                                }
+                            </div>
+                        </div>
+                    }
+                    @if (Model.Assumptions.Count > 0)
+                    {
+                        <ul class="small text-muted mb-0 ps-3">
+                            @foreach (var a in Model.Assumptions)
+                            {
+                                <li>@a</li>
+                            }
+                        </ul>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

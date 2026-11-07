@@ -1,0 +1,1 @@
+{"request_id":"5c2cf2c4-37e2-44a2-9b32-e268b8145ea9","model_id":"deepseek.v3.2","region":"us-east-2","output_text":"OK","usage":{"input_tokens":17,"output_tokens":2,"total_tokens":19,"stop_reason":"end_turn","budget_state":"ok","fallback_used":false},"estimated_cost_usd":"0.001545","actual_cost_usd":"0.000014","status":"active"}

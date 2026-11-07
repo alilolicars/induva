@@ -1,0 +1,170 @@
+@{
+    ViewData["Title"] = "AI Market Demand Forecast";
+    var governorates = ViewBag.Governorates as IEnumerable<SelectListItem> ?? [];
+    var initialForecast = ViewBag.InitialForecast as Induva.Application.Dtos.DemandForecastDto;
+    var defaultProduct = ViewBag.ProductName as string ?? "";
+    var defaultCategory = ViewBag.Category as string ?? "";
+    var defaultGovId = ViewBag.SelectedGovernorateId as int?;
+}
+
+<div class="mb-4">
+    <h1 class="h2 fw-bold mb-1">📈 AI Market Demand Forecast (F3)</h1>
+    <p class="text-muted mb-0">Forecast monthly demand trajectories across 6 or 12 months for manufactured products in Egypt, grounded in regional seasonality and RFQs.</p>
+</div>
+
+<!-- Forecast Query Form -->
+<div class="card shadow-sm border-0 mb-4">
+    <div class="card-body p-4">
+        <form id="demand-forecast-form" class="row g-3 align-items-end">
+            <div class="col-md-4">
+                <label class="form-label small fw-bold">Target Product Name</label>
+                <input type="text" id="forecastProductName" name="ProductName" value="@defaultProduct" class="form-control" placeholder="e.g. Corrugated Cartons, PET Preforms, Glass Jars" required />
+            </div>
+            <div class="col-md-3">
+                <label class="form-label small fw-bold">Industrial Sector (Optional)</label>
+                <select id="forecastCategory" name="Category" class="form-select" asp-items="Html.GetEnumSelectList<Sector>()">
+                    <option value="">Any Sector</option>
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label class="form-label small fw-bold">Governorate (Optional)</label>
+                <select id="forecastGovernorateId" name="GovernorateId" class="form-select">
+                    <option value="">All Egypt (National)</option>
+                    @foreach (var g in governorates)
+                    {
+                        <option value="@g.Value" selected="@(defaultGovId?.ToString() == g.Value)">@g.Text</option>
+                    }
+                </select>
+            </div>
+            <div class="col-md-2">
+                <label class="form-label small fw-bold">Horizon</label>
+                <select id="forecastHorizon" name="HorizonMonths" class="form-select">
+                    <option value="12" selected>12 Months</option>
+                    <option value="6">6 Months</option>
+                </select>
+            </div>
+            <div class="col-12 text-end">
+                <button type="submit" id="btn-generate-forecast" class="btn btn-primary px-4">
+                    🤖 Generate Forecast
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div id="forecast-target">
+    @if (initialForecast is not null)
+    {
+        <partial name="_DemandForecastCard" model="initialForecast" />
+    }
+</div>
+
+@section Scripts {
+    <script src="~/lib/chartjs/chart.umd.min.js"></script>
+    <script>
+        function renderForecastChart(canvas) {
+            if (!canvas || !window.Chart) return;
+            const labels = JSON.parse(canvas.getAttribute('data-labels') || '[]');
+            const values = JSON.parse(canvas.getAttribute('data-values') || '[]');
+
+            // Destroy existing instance if any
+            const existing = Chart.getChart(canvas);
+            if (existing) existing.destroy();
+
+            new Chart(canvas, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Relative Demand Index (0-100)',
+                        data: values,
+                        borderColor: '#0d6efd',
+                        backgroundColor: 'rgba(13, 110, 253, 0.1)',
+                        fill: true,
+                        tension: 0.35,
+                        pointBackgroundColor: '#0d6efd',
+                        pointRadius: 4,
+                        pointHoverRadius: 6
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            min: 0,
+                            max: 100,
+                            title: { display: true, text: 'Demand Index' }
+                        },
+                        x: {
+                            title: { display: true, text: 'Forecast Month' }
+                        }
+                    },
+                    plugins: {
+                        legend: { display: false }
+                    }
+                }
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const initialCanvas = document.getElementById('forecastChart');
+            if (initialCanvas) renderForecastChart(initialCanvas);
+
+            const form = document.getElementById('demand-forecast-form');
+            if (!form) return;
+
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const btn = document.getElementById('btn-generate-forecast');
+                const target = document.getElementById('forecast-target');
+                const pName = document.getElementById('forecastProductName').value.trim();
+                const cat = document.getElementById('forecastCategory').value;
+                const gov = document.getElementById('forecastGovernorateId').value;
+                const horizon = parseInt(document.getElementById('forecastHorizon').value, 10);
+
+                if (!pName) return;
+
+                btn.disabled = true;
+                btn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> Analyzing Market Demand...';
+                target.innerHTML = '<div class="text-center py-5"><div class="spinner-border text-primary mb-2"></div><p class="text-muted small">Querying Egyptian trade flows, platform inquiries & seasonality...</p></div>';
+
+                try {
+                    const token = document.querySelector('meta[name="csrf"]')?.getAttribute('content');
+                    const res = await fetch('/forecasts/generate', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'RequestVerificationToken': token || '',
+                            'X-Requested-With': 'XMLHttpRequest'
+                        },
+                        body: JSON.stringify({
+                            productName: pName,
+                            category: cat || null,
+                            governorateId: gov ? parseInt(gov, 10) : null,
+                            horizonMonths: horizon
+                        })
+                    });
+
+                    if (!res.ok) {
+                        const err = await res.json().catch(() => ({ error: 'Forecast generation failed.' }));
+                        target.innerHTML = `<div class="alert alert-danger shadow-sm">⚠️ ${err.error || 'Forecast generation failed.'}</div>`;
+                        return;
+                    }
+
+                    const html = await res.text();
+                    target.innerHTML = html;
+
+                    const newCanvas = target.querySelector('#forecastChart');
+                    if (newCanvas) renderForecastChart(newCanvas);
+                } catch (err) {
+                    target.innerHTML = `<div class="alert alert-danger shadow-sm">⚠️ Network error: ${err.message}</div>`;
+                } finally {
+                    btn.disabled = false;
+                    btn.innerHTML = '🤖 Generate Forecast';
+                }
+            });
+        });
+    </script>
+}
+

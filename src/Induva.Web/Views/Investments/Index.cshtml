@@ -1,0 +1,258 @@
+@{
+    ViewData["Title"] = "Investment Analysis & Unit Economics";
+    var governorates = ViewBag.Governorates as IEnumerable<SelectListItem> ?? [];
+    var myFactories = ViewBag.MyFactories as IEnumerable<SelectListItem> ?? [];
+    var defaultProduct = ViewBag.ProductName as string ?? "";
+    var defaultCategory = ViewBag.Category as string ?? "";
+    var defaultGovId = ViewBag.GovernorateId as int?;
+    var defaultFactoryId = ViewBag.FactoryId as int?;
+}
+
+<div class="mb-4">
+    <h1 class="h2 fw-bold mb-1">💰 Industrial Investment Analysis (F5)</h1>
+    <p class="text-muted mb-0">Two-step feasibility analysis: AI proposes realistic Egyptian cost assumptions; deterministic financial models project NPV, ROI, and payback scenarios.</p>
+</div>
+
+<!-- Step 1: Query Setup Form -->
+<div class="card shadow-sm border-0 mb-4">
+    <div class="card-header bg-white py-3">
+        <h6 class="fw-bold mb-0">Step 1: Define Target Opportunity</h6>
+    </div>
+    <div class="card-body p-4">
+        <form id="propose-form" class="row g-3 align-items-end">
+            <div class="col-md-4">
+                <label class="form-label small fw-bold">Target Product Name</label>
+                <input type="text" id="propProductName" value="@defaultProduct" class="form-control" placeholder="e.g. Polyethylene Storage Drums" required />
+            </div>
+
+            <div class="col-md-3">
+                <label class="form-label small fw-bold">Sector (Optional)</label>
+                <select id="propCategory" class="form-select" asp-items="Html.GetEnumSelectList<Sector>()">
+                    <option value="">Select Sector...</option>
+                </select>
+            </div>
+
+            <div class="col-md-3">
+                <label class="form-label small fw-bold">Target Governorate</label>
+                <select id="propGovernorateId" class="form-select">
+                    @foreach (var g in governorates)
+                    {
+                        <option value="@g.Value" selected="@(defaultGovId?.ToString() == g.Value)">@g.Text</option>
+                    }
+                </select>
+            </div>
+
+            <div class="col-md-2">
+                <button type="submit" id="btn-propose-assumptions" class="btn btn-primary w-100">
+                    🤖 Propose AI Assumptions
+                </button>
+            </div>
+
+            <div class="col-md-6 mt-2">
+                <label class="form-label small fw-bold text-muted">Leverage Existing Factory Machinery (Optional)</label>
+                <select id="propFactoryId" class="form-select form-select-sm">
+                    <option value="">Greenfield Setup (No existing machinery)</option>
+                    @foreach (var f in myFactories)
+                    {
+                        <option value="@f.Value" selected="@(defaultFactoryId?.ToString() == f.Value)">@f.Text</option>
+                    }
+                </select>
+                <div class="form-text small">Selecting an existing facility reduces estimated Capex to missing equipment only.</div>
+            </div>
+
+            <div class="col-md-6 mt-2">
+                <label class="form-label small fw-bold text-muted">Desired Monthly Volume Target (Optional)</label>
+                <input type="number" id="propVolume" class="form-control form-control-sm" placeholder="Leave empty for AI recommended scale" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div id="investment-form-target"></div>
+
+<div id="investment-results-target"></div>
+
+@section Scripts {
+    <script src="~/lib/chartjs/chart.umd.min.js"></script>
+    <script>
+        function renderCashFlowChart(canvas) {
+            if (!canvas || !window.Chart) return;
+            const monthsCount = parseInt(canvas.getAttribute('data-months') || '36', 10);
+            const conservative = JSON.parse(canvas.getAttribute('data-conservative') || '[]');
+            const base = JSON.parse(canvas.getAttribute('data-base') || '[]');
+            const optimistic = JSON.parse(canvas.getAttribute('data-optimistic') || '[]');
+
+            const labels = [];
+            for (let i = 1; i <= monthsCount; i++) labels.push(`Month ${i}`);
+
+            const existing = Chart.getChart(canvas);
+            if (existing) existing.destroy();
+
+            new Chart(canvas, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: 'Conservative',
+                            data: conservative,
+                            borderColor: '#6c757d',
+                            borderDash: [5, 5],
+                            tension: 0.2,
+                            fill: false
+                        },
+                        {
+                            label: 'Base Scenario',
+                            data: base,
+                            borderColor: '#0d6efd',
+                            borderWidth: 3,
+                            tension: 0.2,
+                            fill: false
+                        },
+                        {
+                            label: 'Optimistic',
+                            data: optimistic,
+                            borderColor: '#198754',
+                            tension: 0.2,
+                            fill: false
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            title: { display: true, text: 'Cumulative EGP' }
+                        },
+                        x: {
+                            title: { display: true, text: 'Timeline' }
+                        }
+                    }
+                }
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const propForm = document.getElementById('propose-form');
+            const propBtn = document.getElementById('btn-propose-assumptions');
+            const formTarget = document.getElementById('investment-form-target');
+            const resultsTarget = document.getElementById('investment-results-target');
+
+            propForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const pName = document.getElementById('propProductName').value.trim();
+                const cat = document.getElementById('propCategory').value;
+                const gov = document.getElementById('propGovernorateId').value;
+                const factory = document.getElementById('propFactoryId').value;
+                const vol = document.getElementById('propVolume').value;
+
+                if (!pName) return;
+
+                propBtn.disabled = true;
+                propBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> Proposing Assumptions...';
+                formTarget.innerHTML = '<div class="text-center py-4"><div class="spinner-border text-primary mb-2"></div><p class="text-muted small">Grounding assumptions in regional Egyptian input costs & machinery...</p></div>';
+                resultsTarget.innerHTML = '';
+
+                try {
+                    const token = document.querySelector('meta[name="csrf"]')?.getAttribute('content');
+                    const res = await fetch('/investments/assumptions', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'RequestVerificationToken': token || '',
+                            'X-Requested-With': 'XMLHttpRequest'
+                        },
+                        body: JSON.stringify({
+                            productName: pName,
+                            category: cat || null,
+                            governorateId: gov ? parseInt(gov, 10) : null,
+                            factoryId: factory ? parseInt(factory, 10) : null,
+                            desiredMonthlyVolume: vol ? parseFloat(vol) : null
+                        })
+                    });
+
+                    if (!res.ok) {
+                        const err = await res.json().catch(() => ({ error: 'Failed to propose assumptions.' }));
+                        formTarget.innerHTML = `<div class="alert alert-danger">⚠️ ${err.error || 'Failed to propose assumptions.'}</div>`;
+                        return;
+                    }
+
+                    formTarget.innerHTML = await res.text();
+
+                    // Wire up the newly rendered calculate form
+                    const calcForm = document.getElementById('calculate-form');
+                    if (calcForm) {
+                        calcForm.addEventListener('submit', handleCalculate);
+                        // Trigger immediate initial calculation
+                        calcForm.requestSubmit();
+                    }
+                } catch (err) {
+                    formTarget.innerHTML = `<div class="alert alert-danger">⚠️ Network error: ${err.message}</div>`;
+                } finally {
+                    propBtn.disabled = false;
+                    propBtn.innerHTML = '🤖 Propose AI Assumptions';
+                }
+            });
+
+            async function handleCalculate(e) {
+                e.preventDefault();
+                const calcBtn = document.getElementById('btn-recalculate');
+                if (calcBtn) calcBtn.disabled = true;
+
+                resultsTarget.innerHTML = '<div class="text-center py-4"><div class="spinner-border text-success mb-2"></div><p class="text-muted small">Computing financial metrics & scenarios (C#)...</p></div>';
+
+                const payload = {
+                    productName: document.getElementById('calcProductName').value,
+                    category: document.getElementById('calcCategory').value || null,
+                    governorateId: document.getElementById('calcGovernorateId').value ? parseInt(document.getElementById('calcGovernorateId').value, 10) : null,
+                    factoryId: document.getElementById('calcFactoryId').value ? parseInt(document.getElementById('calcFactoryId').value, 10) : null,
+                    capexEgp: parseFloat(document.getElementById('calcCapex').value),
+                    monthlyVolumeUnits: parseFloat(document.getElementById('calcVolume').value),
+                    unitPriceEgp: parseFloat(document.getElementById('calcPrice').value),
+                    unitMaterialCostEgp: parseFloat(document.getElementById('calcMaterialCost').value),
+                    unitLaborCostEgp: parseFloat(document.getElementById('calcLaborCost').value),
+                    unitEnergyCostEgp: parseFloat(document.getElementById('calcEnergyCost').value),
+                    unitTransportCostEgp: parseFloat(document.getElementById('calcTransportCost').value),
+                    monthlyFixedCostsEgp: parseFloat(document.getElementById('calcFixedCosts').value),
+                    rampUpMonths: parseInt(document.getElementById('calcRampUp').value, 10),
+                    years: parseInt(document.getElementById('calcYears').value, 10)
+                };
+
+                try {
+                    const token = document.querySelector('meta[name="csrf"]')?.getAttribute('content');
+                    const res = await fetch('/investments/calculate', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'RequestVerificationToken': token || '',
+                            'X-Requested-With': 'XMLHttpRequest'
+                        },
+                        body: JSON.stringify(payload)
+                    });
+
+                    if (!res.ok) {
+                        const err = await res.json().catch(() => ({ error: 'Calculation failed.' }));
+                        resultsTarget.innerHTML = `<div class="alert alert-danger">⚠️ ${err.error || 'Calculation failed.'}</div>`;
+                        return;
+                    }
+
+                    resultsTarget.innerHTML = await res.text();
+                    const chartCanvas = resultsTarget.querySelector('#cashFlowChart');
+                    if (chartCanvas) renderCashFlowChart(chartCanvas);
+                } catch (err) {
+                    resultsTarget.innerHTML = `<div class="alert alert-danger">⚠️ Network error: ${err.message}</div>`;
+                } finally {
+                    if (calcBtn) calcBtn.disabled = false;
+                }
+            }
+
+            // Auto-trigger if product was passed in query string
+            const initialProduct = document.getElementById('propProductName').value.trim();
+            if (initialProduct) {
+                propForm.requestSubmit();
+            }
+        });
+    </script>
+}
+

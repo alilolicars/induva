@@ -1,0 +1,11 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/Induva.Application/Induva.Application.csproj" />
+    <Project Path="src/Induva.Domain/Induva.Domain.csproj" />
+    <Project Path="src/Induva.Infrastructure/Induva.Infrastructure.csproj" />
+    <Project Path="src/Induva.Web/Induva.Web.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/Induva.Tests/Induva.Tests.csproj" />
+  </Folder>
+</Solution>

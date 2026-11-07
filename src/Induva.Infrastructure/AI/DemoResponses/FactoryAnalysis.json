@@ -1,0 +1,62 @@
+{
+  "summary": "Delta Tomato Canning Co. operates an integrated vegetable processing facility in Sharqia, capable of industrial washing, vacuum concentration, automated canning, glass-jar filling, and retort sterilization for shelf-stable food products.",
+  "capabilityTags": [
+    "canning",
+    "fruit-vegetable-processing",
+    "food-packaging",
+    "beverage-bottling"
+  ],
+  "processes": [
+    {
+      "name": "Cleaning & Sorting",
+      "machines": ["washing line"],
+      "materialsProcessable": ["Tomatoes", "Citrus", "Vegetables"],
+      "capacityNote": "High throughput pre-treatment"
+    },
+    {
+      "name": "Thermal Pulverization",
+      "machines": ["hot-break pulper"],
+      "materialsProcessable": ["Fresh Produce"],
+      "capacityNote": "Inactivates pectic enzymes"
+    },
+    {
+      "name": "Vacuum Concentration",
+      "machines": ["vacuum evaporator"],
+      "materialsProcessable": ["Tomato Pulp", "Fruit Purees"],
+      "capacityNote": "Low-temperature evaporation"
+    },
+    {
+      "name": "Hermetic Packaging",
+      "machines": ["can seamer", "glass-jar filling line"],
+      "materialsProcessable": ["Tin Cans", "Glass Jars"],
+      "capacityNote": "Dual packaging lines"
+    },
+    {
+      "name": "Thermal Sterilization",
+      "machines": ["retort sterilizer"],
+      "materialsProcessable": ["Sealed Cans", "Sealed Jars"],
+      "capacityNote": "Commercial sterility compliant"
+    }
+  ],
+  "strengths": [
+    "Complete end-to-end hot-break and concentration line",
+    "Dual packaging flexibility (both tin cans and glass jars)",
+    "Retort autoclave guarantees long shelf life without preservatives",
+    "Proximity to major tomato farming clusters in Sharqia and Delta"
+  ],
+  "constraints": [
+    "High thermal energy consumption for steam boilers",
+    "Severe seasonality outside the Egyptian winter tomato harvest window",
+    "Equipment cleaning turnaround required between different food categories"
+  ],
+  "underusedAssets": [
+    "Glass-jar filling line during October to February idle window",
+    "Retort sterilizer capacity can be rented for contract sterilization"
+  ],
+  "missingInformation": [
+    "Boiler steam capacity (tons/hour)",
+    "Exact can diameter / jar volume specifications"
+  ],
+  "confidence": 0.88
+}
+

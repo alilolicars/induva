@@ -1,0 +1,24 @@
+{
+  "matches": [
+    {
+      "candidateId": 1,
+      "adjustment": 5,
+      "reasons": [
+        "High feedstock purity aligned with equipment specifications",
+        "Direct highway connection via Regional Ring Road",
+        "Documented supplier reliability track record"
+      ],
+      "nextStep": "Send connection request to verify delivery lead times."
+    },
+    {
+      "candidateId": 2,
+      "adjustment": 2,
+      "reasons": [
+        "Competitive bulk pricing tiers",
+        "Slightly farther geographic distance"
+      ],
+      "nextStep": "Request quotation for preliminary trial batch."
+    }
+  ]
+}
+

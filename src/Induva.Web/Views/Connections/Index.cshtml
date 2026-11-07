@@ -1,0 +1,136 @@
+@{
+    ViewData["Title"] = "Connections Inbox";
+    var received = ViewBag.Received as IReadOnlyList<ConnectionRequestDto> ?? [];
+    var sent = ViewBag.Sent as IReadOnlyList<ConnectionRequestDto> ?? [];
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h1 class="h2 fw-bold mb-1">🤝 Connections & Networking</h1>
+        <p class="text-muted mb-0">Manage direct industrial introductions, procurement inquiries, and partnership requests.</p>
+    </div>
+</div>
+
+<ul class="nav nav-pills mb-4" id="connTabs" role="tablist">
+    <li class="nav-item" role="presentation">
+        <button class="nav-link active" id="received-tab" data-bs-toggle="pill" data-bs-target="#received" type="button" role="tab" aria-controls="received" aria-selected="true">
+            📥 Received Requests
+            @if (received.Any(r => r.Status == ConnectionStatus.Pending))
+            {
+                <span class="badge bg-danger ms-1">@received.Count(r => r.Status == ConnectionStatus.Pending)</span>
+            }
+        </button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link" id="sent-tab" data-bs-toggle="pill" data-bs-target="#sent" type="button" role="tab" aria-controls="sent" aria-selected="false">
+            📤 Sent Requests (@sent.Count)
+        </button>
+    </li>
+</ul>
+
+<div class="tab-content" id="connTabsContent">
+    <!-- Received Tab -->
+    <div class="tab-pane fade show active" id="received" role="tabpanel" aria-labelledby="received-tab">
+        @if (received.Count == 0)
+        {
+            <div class="text-center py-5 bg-white rounded shadow-sm border">
+                <div class="display-6 mb-2">📭</div>
+                <h5 class="fw-bold">No received connection requests</h5>
+                <p class="text-muted mb-0">When other users request connections with your factories, startups, or requests, they'll appear here.</p>
+            </div>
+        }
+        else
+        {
+            <div class="row g-3">
+                @foreach (var r in received)
+                {
+                    <div class="col-md-6">
+                        <div class="card h-100 shadow-sm border-0">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-start mb-2">
+                                    <div>
+                                        <h5 class="fw-bold mb-0">@r.FromDisplayName</h5>
+                                        <span class="small text-muted">@r.CreatedAtUtc.ToString("dd MMM yyyy, HH:mm") UTC</span>
+                                    </div>
+                                    <span class="badge @(r.Status == ConnectionStatus.Pending ? "bg-warning text-dark" : r.Status == ConnectionStatus.Accepted ? "bg-success" : "bg-secondary")">
+                                        @r.Status
+                                    </span>
+                                </div>
+
+                                <div class="alert alert-light border small mb-3">
+                                    <strong>Regarding @r.RelatedType:</strong> @r.RelatedTitle
+                                </div>
+
+                                <p class="card-text text-secondary mb-3 small" style="white-space: pre-line;">@r.Message</p>
+
+                                @if (r.Status == ConnectionStatus.Pending)
+                                {
+                                    <div class="d-flex gap-2 pt-2 border-top">
+                                        <form asp-action="Respond" method="post" class="d-inline">
+                                            <input type="hidden" name="id" value="@r.Id" />
+                                            <input type="hidden" name="accept" value="true" />
+                                            <button type="submit" class="btn btn-sm btn-success">✓ Accept</button>
+                                        </form>
+                                        <form asp-action="Respond" method="post" class="d-inline">
+                                            <input type="hidden" name="id" value="@r.Id" />
+                                            <input type="hidden" name="accept" value="false" />
+                                            <button type="submit" class="btn btn-sm btn-outline-danger">✕ Decline</button>
+                                        </form>
+                                    </div>
+                                }
+                                else if (r.Status == ConnectionStatus.Accepted)
+                                {
+                                    <div class="text-success small fw-semibold pt-2 border-top">
+                                        ✓ Accepted on @(r.RespondedAtUtc?.ToString("dd MMM yyyy") ?? "-")
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+    </div>
+
+    <!-- Sent Tab -->
+    <div class="tab-pane fade" id="sent" role="tabpanel" aria-labelledby="sent-tab">
+        @if (sent.Count == 0)
+        {
+            <div class="text-center py-5 bg-white rounded shadow-sm border">
+                <div class="display-6 mb-2">📤</div>
+                <h5 class="fw-bold">No sent requests</h5>
+                <p class="text-muted mb-0">Browse factories, suppliers, or startups and click "Request Connection" to start conversations.</p>
+            </div>
+        }
+        else
+        {
+            <div class="row g-3">
+                @foreach (var s in sent)
+                {
+                    <div class="col-md-6">
+                        <div class="card h-100 shadow-sm border-0">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-start mb-2">
+                                    <div>
+                                        <h5 class="fw-bold mb-0">To: @s.ToDisplayName</h5>
+                                        <span class="small text-muted">Sent on @s.CreatedAtUtc.ToString("dd MMM yyyy, HH:mm") UTC</span>
+                                    </div>
+                                    <span class="badge @(s.Status == ConnectionStatus.Pending ? "bg-warning text-dark" : s.Status == ConnectionStatus.Accepted ? "bg-success" : "bg-secondary")">
+                                        @s.Status
+                                    </span>
+                                </div>
+
+                                <div class="alert alert-light border small mb-2">
+                                    <strong>Regarding @s.RelatedType:</strong> @s.RelatedTitle
+                                </div>
+
+                                <p class="card-text text-secondary small mb-0" style="white-space: pre-line;">@s.Message</p>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+    </div>
+</div>
+

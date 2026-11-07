@@ -1,0 +1,73 @@
+@model InvestmentAnalysisDto
+@{
+    ViewData["Title"] = $"Investment Feasibility - {Model.ProductName}";
+}
+
+<div class="mb-4 d-flex justify-content-between align-items-center flex-wrap gap-2">
+    <div>
+        <h1 class="h2 fw-bold mb-1">💰 Investment Analysis Details</h1>
+        <p class="text-muted mb-0">Projected metrics for @Model.ProductName in @Model.GovernorateName</p>
+    </div>
+    <a asp-action="Index" class="btn btn-outline-primary btn-sm">&larr; New Analysis</a>
+</div>
+
+<partial name="_InvestmentResultsCard" model="Model" />
+
+@section Scripts {
+    <script src="~/lib/chartjs/chart.umd.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const canvas = document.getElementById('cashFlowChart');
+            if (!canvas || !window.Chart) return;
+
+            const monthsCount = parseInt(canvas.getAttribute('data-months') || '36', 10);
+            const conservative = JSON.parse(canvas.getAttribute('data-conservative') || '[]');
+            const base = JSON.parse(canvas.getAttribute('data-base') || '[]');
+            const optimistic = JSON.parse(canvas.getAttribute('data-optimistic') || '[]');
+
+            const labels = [];
+            for (let i = 1; i <= monthsCount; i++) labels.push(`Month ${i}`);
+
+            new Chart(canvas, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: 'Conservative',
+                            data: conservative,
+                            borderColor: '#6c757d',
+                            borderDash: [5, 5],
+                            tension: 0.2,
+                            fill: false
+                        },
+                        {
+                            label: 'Base Scenario',
+                            data: base,
+                            borderColor: '#0d6efd',
+                            borderWidth: 3,
+                            tension: 0.2,
+                            fill: false
+                        },
+                        {
+                            label: 'Optimistic',
+                            data: optimistic,
+                            borderColor: '#198754',
+                            tension: 0.2,
+                            fill: false
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: { title: { display: true, text: 'Cumulative EGP' } },
+                        x: { title: { display: true, text: 'Timeline' } }
+                    }
+                }
+            });
+        });
+    </script>
+}
+

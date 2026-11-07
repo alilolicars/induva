@@ -1,0 +1,180 @@
+@model ProductSuggestionSummaryDto
+
+<div class="card shadow-sm border-0 mb-4">
+    <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center flex-wrap gap-2">
+        <div>
+            <h5 class="fw-bold mb-0 text-primary">💡 Alternative Product Suggestions (@Model.Suggestions.Count)</h5>
+            <small class="text-muted">Grounded in your factory machines, idle windows, and Egyptian market demand.</small>
+        </div>
+        <div class="d-flex align-items-center gap-2">
+            @if (Model.FromCache)
+            {
+                <span class="badge bg-secondary-subtle text-secondary border">Cached Analysis</span>
+            }
+            <span class="small text-muted">@Model.GeneratedAtUtc.ToString("dd MMM yyyy, HH:mm") UTC</span>
+        </div>
+    </div>
+    <div class="card-body p-3">
+        @if (Model.Suggestions.Count == 0)
+        {
+            <div class="text-center py-4 text-muted">
+                <p class="mb-0">No alternative products suggested. Verify your registered machinery and capability profile.</p>
+            </div>
+        }
+        else
+        {
+            <div class="d-flex flex-column gap-3 mb-3">
+                @foreach (var s in Model.Suggestions)
+                {
+                    <div class="card border rounded shadow-xs suggestion-item" id="suggestion-card-@s.Id">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-start mb-2 flex-wrap gap-2">
+                                <div>
+                                    <div class="d-flex align-items-center gap-2">
+                                        <h5 class="fw-bold mb-0 text-dark">@s.Name</h5>
+                                        @if (!string.IsNullOrEmpty(s.Category))
+                                        {
+                                            <span class="badge bg-light text-secondary border">@s.Category</span>
+                                        }
+                                        <span class="badge @(s.Status == SuggestionStatus.Saved ? "bg-success" : "bg-info text-dark")" id="status-badge-@s.Id">
+                                            @s.Status
+                                        </span>
+                                    </div>
+                                    <p class="small text-secondary mb-0 mt-1">@s.Rationale</p>
+                                </div>
+                                <div class="text-end">
+                                    <span class="badge @(s.DemandLevel == DemandLevel.High ? "bg-success-subtle text-success border" : s.DemandLevel == DemandLevel.Medium ? "bg-primary-subtle text-primary border" : "bg-warning-subtle text-warning border")">
+                                        Demand: @s.DemandLevel
+                                    </span>
+                                    <div class="small text-muted mt-1">Confidence: @((s.Confidence * 100).ToString("F0"))%</div>
+                                </div>
+                            </div>
+
+                            <!-- Financial Estimates Row -->
+                            <div class="row g-2 p-2 bg-light rounded my-2 small text-center">
+                                <div class="col-6 col-md-3">
+                                    <span class="text-muted d-block">Est. Cost</span>
+                                    <strong>@s.EstUnitCostEgp.ToString("N2") EGP</strong>
+                                </div>
+                                <div class="col-6 col-md-3">
+                                    <span class="text-muted d-block">Est. Price</span>
+                                    <strong class="text-primary">@s.EstUnitPriceEgp.ToString("N2") EGP</strong>
+                                </div>
+                                <div class="col-6 col-md-3">
+                                    <span class="text-muted d-block">Est. Margin</span>
+                                    <strong class="@(s.MarginPercent < 15 ? "text-warning" : "text-success")">@s.MarginPercent%</strong>
+                                </div>
+                                <div class="col-6 col-md-3">
+                                    <span class="text-muted d-block">Est. Monthly Volume</span>
+                                    <strong>@s.EstMonthlyVolume.ToString("N0") units</strong>
+                                </div>
+                            </div>
+
+                            <!-- Machines & Materials -->
+                            <div class="row g-2 small mb-2">
+                                <div class="col-md-6">
+                                    <span class="text-muted fw-semibold">Required Equipment:</span>
+                                    <div class="d-flex flex-wrap gap-1 mt-1">
+                                        @foreach (var m in s.RequiredMachines)
+                                        {
+                                            <span class="badge bg-white text-dark border">⚙️ @m</span>
+                                        }
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <span class="text-muted fw-semibold">Feedstock / Materials:</span>
+                                    <div class="d-flex flex-wrap gap-1 mt-1">
+                                        @foreach (var mat in s.RequiredRawMaterials)
+                                        {
+                                            <span class="badge bg-white text-secondary border">📦 @mat</span>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+
+                            @if (!string.IsNullOrWhiteSpace(s.SeasonalityNote))
+                            {
+                                <div class="small text-muted mb-2">
+                                    📅 <strong>Seasonality:</strong> @s.SeasonalityNote
+                                </div>
+                            }
+
+                            <!-- Risks -->
+                            @if (s.Risks.Count > 0)
+                            {
+                                <div class="alert alert-warning-subtle border-warning p-2 small mb-3">
+                                    <span class="fw-bold text-warning-emphasis">Risks & Considerations:</span>
+                                    <ul class="mb-0 ps-3">
+                                        @foreach (var rk in s.Risks)
+                                        {
+                                            <li>@rk</li>
+                                        }
+                                    </ul>
+                                </div>
+                            }
+
+                            <!-- Actions -->
+                            <div class="d-flex justify-content-between align-items-center pt-2 border-top flex-wrap gap-2">
+                                <div class="d-flex gap-2">
+                                    @if (s.Status == SuggestionStatus.Suggested)
+                                    {
+                                        <button class="btn btn-sm btn-outline-success btn-save-suggestion" data-id="@s.Id">
+                                            ✓ Save Opportunity
+                                        </button>
+                                        <button class="btn btn-sm btn-outline-secondary btn-dismiss-suggestion" data-id="@s.Id">
+                                            ✕ Dismiss
+                                        </button>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-success-subtle text-success border py-2 px-3">
+                                            ✓ Saved to Pipeline
+                                        </span>
+                                    }
+                                </div>
+                                <div class="d-flex gap-2">
+                                    <a asp-controller="Investments" asp-action="Index"
+                                       asp-route-product="@s.Name"
+                                       asp-route-category="@s.Category"
+                                       asp-route-factoryId="@Model.FactoryId"
+                                       class="btn btn-sm btn-outline-success">
+                                        💰 Analyze Investment (F5)
+                                    </a>
+                                    <a asp-controller="DemandForecasts" asp-action="Index"
+                                       asp-route-product="@s.Name"
+                                       asp-route-category="@s.Category"
+                                       class="btn btn-sm btn-outline-primary">
+                                        📈 Forecast Demand (F3)
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+
+        <!-- Assumptions -->
+        @if (Model.Assumptions.Count > 0)
+        {
+            <div class="accordion accordion-flush" id="assumptionsAcc">
+                <div class="accordion-item bg-transparent">
+                    <h2 class="accordion-header" id="headingAssump">
+                        <button class="accordion-button collapsed py-2 px-0 bg-transparent small text-muted" type="button" data-bs-toggle="collapse" data-bs-target="#collapseAssump">
+                            ℹ️ Model Economic Assumptions (@Model.Assumptions.Count)
+                        </button>
+                    </h2>
+                    <div id="collapseAssump" class="accordion-collapse collapse" data-bs-parent="#assumptionsAcc">
+                        <ul class="small text-muted ps-3 mb-0 pt-2">
+                            @foreach (var a in Model.Assumptions)
+                            {
+                                <li>@a</li>
+                            }
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+

@@ -1,0 +1,40 @@
+@model Induva.Web.ViewModels.SendConnectionModalViewModel
+
+@if (User.Identity?.IsAuthenticated == true)
+{
+    var modalId = $"connectModal_{Model.RelatedType}_{Model.RelatedId}";
+
+    <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#@modalId">
+        🤝 Request Connection
+    </button>
+
+    <div class="modal fade" id="@modalId" tabindex="-1" aria-labelledby="@(modalId)Label" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form asp-controller="Connections" asp-action="Send" method="post">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="@(modalId)Label">Connect regarding @Model.TargetTitle</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <input type="hidden" name="ToUserId" value="@Model.ToUserId" />
+                        <input type="hidden" name="RelatedType" value="@Model.RelatedType" />
+                        <input type="hidden" name="RelatedId" value="@Model.RelatedId" />
+                        <input type="hidden" name="TargetTitle" value="@Model.TargetTitle" />
+
+                        <div class="mb-3">
+                            <label class="form-label small fw-bold">Introductory Note</label>
+                            <textarea name="Message" class="form-control" rows="4" maxlength="1000" required placeholder="Describe your industrial background, partnership interest, or procurement intent...">@Model.Message</textarea>
+                            <div class="form-text small">The recipient will receive your contact info and this message in their platform inbox.</div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-sm btn-primary">Send Request</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+}
+

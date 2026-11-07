@@ -1,0 +1,128 @@
+@model DemandRequestFormViewModel
+@{
+    var isEdit = Model.Id.HasValue;
+    ViewData["Title"] = isEdit ? "Edit Demand Request" : "Post Procurement Demand Request";
+}
+
+<div class="row justify-content-center">
+    <div class="col-lg-9">
+        <div class="card shadow-sm border-0">
+            <div class="card-header bg-white py-3">
+                <h4 class="fw-bold mb-0">@(isEdit ? "Edit Demand Request" : "Post Manufacturing Demand Request (RFQ)")</h4>
+                <p class="text-muted small mb-0">Publish your purchasing requirements to receive proposals from qualified Egyptian manufacturers.</p>
+            </div>
+            <div class="card-body p-4">
+                <form asp-action="@(isEdit ? "Edit" : "Create")" asp-route-id="@Model.Id" method="post">
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+
+                    <div class="mb-3">
+                        <label asp-for="Title" class="form-label fw-semibold"></label>
+                        <input asp-for="Title" class="form-control" placeholder="e.g. Procurement of 50,000 food-grade corrugated carton boxes" />
+                        <span asp-validation-for="Title" class="text-danger small"></span>
+                    </div>
+
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <label asp-for="ProductName" class="form-label fw-semibold"></label>
+                            <input asp-for="ProductName" class="form-control" placeholder="e.g. Corrugated Cartons, PET Preforms, Cotton Yarn" />
+                            <span asp-validation-for="ProductName" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="Sector" class="form-label fw-semibold"></label>
+                            <select asp-for="Sector" asp-items="Html.GetEnumSelectList<Sector>()" class="form-select"></select>
+                            <span asp-validation-for="Sector" class="text-danger small"></span>
+                        </div>
+                    </div>
+
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-4">
+                            <label asp-for="Quantity" class="form-label fw-semibold"></label>
+                            <input asp-for="Quantity" type="number" step="any" class="form-control" placeholder="Quantity" />
+                            <span asp-validation-for="Quantity" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-4">
+                            <label asp-for="Unit" class="form-label fw-semibold"></label>
+                            <input asp-for="Unit" class="form-control" placeholder="e.g. pieces, tons, meters" />
+                            <span asp-validation-for="Unit" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-4">
+                            <label asp-for="TargetPriceEgp" class="form-label fw-semibold"></label>
+                            <div class="input-group">
+                                <input asp-for="TargetPriceEgp" type="number" step="any" class="form-control" placeholder="Optional" />
+                                <span class="input-group-text">EGP/unit</span>
+                            </div>
+                            <span asp-validation-for="TargetPriceEgp" class="text-danger small"></span>
+                        </div>
+                    </div>
+
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <label asp-for="GovernorateId" class="form-label fw-semibold"></label>
+                            <select asp-for="GovernorateId" asp-items="Model.Governorates" class="form-select">
+                                <option value="">Select Destination Governorate...</option>
+                            </select>
+                            <span asp-validation-for="GovernorateId" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-3">
+                            <label asp-for="DeadlineUtc" class="form-label fw-semibold"></label>
+                            <input asp-for="DeadlineUtc" type="date" class="form-control" />
+                            <span asp-validation-for="DeadlineUtc" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-3">
+                            <label asp-for="Status" class="form-label fw-semibold"></label>
+                            <select asp-for="Status" class="form-select">
+                                <option value="Open">Open</option>
+                                <option value="Closed">Closed</option>
+                            </select>
+                            <span asp-validation-for="Status" class="text-danger small"></span>
+                        </div>
+                    </div>
+
+                    <div class="form-check form-switch mb-3">
+                        <input asp-for="IsExport" class="form-check-input" type="checkbox" />
+                        <label asp-for="IsExport" class="form-check-label fw-semibold"></label>
+                        <div class="form-text small">Check if this order is intended for export to foreign markets.</div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label asp-for="Description" class="form-label fw-semibold"></label>
+                        <textarea asp-for="Description" class="form-control" rows="3" placeholder="Technical specs, material standards, certifications (ISO, HACCP), delivery terms..."></textarea>
+                        <span asp-validation-for="Description" class="text-danger small"></span>
+                    </div>
+
+                    <!-- Capability Tags Multi-select -->
+                    <div class="mb-4">
+                        <label class="form-label fw-semibold mb-1">Required Machinery & Capability Tags</label>
+                        <p class="text-muted small mb-2">Help matching algorithms connect you with factories having suitable production lines:</p>
+                        <div class="border rounded p-3 bg-light" style="max-height: 200px; overflow-y: auto;">
+                            <div class="row g-2">
+                                @foreach (var tagItem in DemandRequestFormViewModel.AvailableCapabilityTags)
+                                {
+                                    var isChecked = Model.SelectedTags.Contains(tagItem.Value);
+                                    <div class="col-sm-6 col-md-4">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" name="SelectedTags" value="@tagItem.Value" id="tag_@tagItem.Value" @(isChecked ? "checked" : "") />
+                                            <label class="form-check-label small" for="tag_@tagItem.Value">
+                                                @tagItem.Text
+                                            </label>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-center pt-3 border-top">
+                        <a asp-action="@(isEdit ? "Details" : "Index")" asp-route-id="@Model.Id" class="btn btn-outline-secondary">Cancel</a>
+                        <button type="submit" class="btn btn-primary px-4">@(isEdit ? "Update Request" : "Post Demand Request")</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
+

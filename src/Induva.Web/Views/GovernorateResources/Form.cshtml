@@ -1,0 +1,62 @@
+@model GovernorateResourceFormViewModel
+@{
+    var isEdit = Model.Id.HasValue;
+    ViewData["Title"] = isEdit ? "Edit Governorate Resource" : "Add Governorate Resource";
+}
+
+<div class="row justify-content-center">
+    <div class="col-lg-7">
+        <div class="card shadow-sm border-0">
+            <div class="card-header bg-white py-3">
+                <h4 class="fw-bold mb-0">@(isEdit ? "Edit Regional Raw Material Resource" : "Add Regional Raw Material Resource")</h4>
+                <p class="text-muted small mb-0">Data entered here grounds AI suggestions in local Egyptian supply realities.</p>
+            </div>
+            <div class="card-body p-4">
+                <form asp-action="@(isEdit ? "Edit" : "Create")" asp-route-id="@Model.Id" method="post">
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+
+                    <div class="mb-3">
+                        <label asp-for="GovernorateId" class="form-label fw-semibold"></label>
+                        <select asp-for="GovernorateId" asp-items="Model.Governorates" class="form-select">
+                            <option value="">Select Governorate...</option>
+                        </select>
+                        <span asp-validation-for="GovernorateId" class="text-danger small"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="RawMaterialId" class="form-label fw-semibold"></label>
+                        <select asp-for="RawMaterialId" asp-items="Model.RawMaterials" class="form-select">
+                            <option value="">Select Raw Material...</option>
+                        </select>
+                        <span asp-validation-for="RawMaterialId" class="text-danger small"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="EstimatedAnnualTons" class="form-label fw-semibold"></label>
+                        <div class="input-group">
+                            <input asp-for="EstimatedAnnualTons" type="number" step="any" class="form-control" placeholder="e.g. 150000" />
+                            <span class="input-group-text">Tons / year</span>
+                        </div>
+                        <span asp-validation-for="EstimatedAnnualTons" class="text-danger small"></span>
+                    </div>
+
+                    <div class="mb-4">
+                        <label asp-for="Notes" class="form-label fw-semibold"></label>
+                        <textarea asp-for="Notes" class="form-control" rows="3" placeholder="Mining locations, agricultural seasons, extraction purity, key industrial parks..."></textarea>
+                        <span asp-validation-for="Notes" class="text-danger small"></span>
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-center pt-3 border-top">
+                        <a asp-action="Index" class="btn btn-outline-secondary">Cancel</a>
+                        <button type="submit" class="btn btn-primary px-4">@(isEdit ? "Update Resource" : "Save Resource")</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
+

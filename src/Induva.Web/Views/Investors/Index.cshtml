@@ -1,0 +1,125 @@
+@model PagedResult<InvestorListItemDto>
+@{
+    ViewData["Title"] = "Industrial Investors & Funds";
+    var filter = ViewBag.Filter as InvestorFilter ?? new InvestorFilter();
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+    <div>
+        <h1 class="h2 fw-bold mb-1">Industrial Investors & Funds</h1>
+        <p class="text-muted mb-0">Browse angel investors, venture capital funds, and family offices funding Egyptian manufacturing and hardware ventures.</p>
+    </div>
+    @if (User.IsInRole(Roles.Investor) || User.IsInRole(Roles.Admin))
+    {
+        <a asp-action="Manage" class="btn btn-primary">Manage My Investor Profile</a>
+    }
+</div>
+
+<!-- Filters -->
+<div class="card shadow-sm border-0 mb-4">
+    <div class="card-body p-3">
+        <form method="get" class="row g-2 align-items-end">
+            <div class="col-md-4">
+                <label class="form-label small text-muted mb-1">Search Name / Fund</label>
+                <input type="text" name="Q" value="@filter.Q" class="form-control form-control-sm" placeholder="e.g. Nile Capital, Delta Ventures..." />
+            </div>
+            <div class="col-md-3">
+                <label class="form-label small text-muted mb-1">Sector Focus</label>
+                <select name="Sector" class="form-select form-select-sm" asp-items="Html.GetEnumSelectList<Sector>()">
+                    <option value="">All Sectors</option>
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label class="form-label small text-muted mb-1">Preferred Stage</label>
+                <select name="Stage" class="form-select form-select-sm" asp-items="Html.GetEnumSelectList<StartupStage>()">
+                    <option value="">All Stages</option>
+                </select>
+            </div>
+            <div class="col-md-2 d-flex gap-2">
+                <button type="submit" class="btn btn-primary btn-sm w-100">Filter</button>
+                <a asp-action="Index" class="btn btn-outline-secondary btn-sm">Reset</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Results -->
+@if (Model.Items.Count == 0)
+{
+    <div class="text-center py-5 bg-white rounded shadow-sm border">
+        <div class="display-6 mb-2">💼</div>
+        <h5 class="fw-bold">No investors found</h5>
+        <p class="text-muted mb-3">Try adjusting your filters or search terms.</p>
+        <a asp-action="Index" class="btn btn-sm btn-outline-primary">Clear Filters</a>
+    </div>
+}
+else
+{
+    <div class="row g-3 mb-4">
+        @foreach (var inv in Model.Items)
+        {
+            <div class="col-md-6 col-lg-4">
+                <div class="card h-100 shadow-sm border-0 hover-lift">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <h5 class="card-title fw-bold mb-0">
+                                <a asp-action="Details" asp-route-id="@inv.Id" class="text-decoration-none text-dark stretched-link">
+                                    @inv.DisplayName
+                                </a>
+                            </h5>
+                        </div>
+                        <div class="mb-2">
+                            @if (inv.MinTicketEgp.HasValue || inv.MaxTicketEgp.HasValue)
+                            {
+                                <span class="badge bg-success-subtle text-success border">
+                                    Ticket: @(inv.MinTicketEgp?.ToString("N0") ?? "0") - @(inv.MaxTicketEgp?.ToString("N0") ?? "∞") EGP
+                                </span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-light text-muted border">Undisclosed Ticket</span>
+                            }
+                        </div>
+                        @if (inv.Sectors.Count > 0)
+                        {
+                            <div class="d-flex flex-wrap gap-1 mb-2">
+                                @foreach (var s in inv.Sectors.Take(3))
+                                {
+                                    <span class="badge bg-light text-secondary border small">@s</span>
+                                }
+                                @if (inv.Sectors.Count > 3)
+                                {
+                                    <span class="badge bg-light text-muted border small">+@(inv.Sectors.Count - 3)</span>
+                                }
+                            </div>
+                        }
+                        <div class="d-flex align-items-center justify-content-between pt-2 border-top small text-muted">
+                            <span>@(inv.PreferredStages.Count > 0 ? string.Join(", ", inv.PreferredStages) : "All Stages")</span>
+                            <span class="text-primary fw-semibold">View Profile &rarr;</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+
+    <!-- Pagination -->
+    @if (Model.TotalPages > 1)
+    {
+        <nav aria-label="Page navigation">
+            <ul class="pagination pagination-sm justify-content-center">
+                @for (var p = 1; p <= Model.TotalPages; p++)
+                {
+                    <li class="page-item @(p == Model.Page ? "active" : "")">
+                        <a class="page-link" asp-action="Index"
+                           asp-route-page="@p"
+                           asp-route-q="@filter.Q"
+                           asp-route-sector="@filter.Sector"
+                           asp-route-stage="@filter.Stage">@p</a>
+                    </li>
+                }
+            </ul>
+        </nav>
+    }
+}
+

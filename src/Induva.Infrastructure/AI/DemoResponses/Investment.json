@@ -1,0 +1,30 @@
+{
+  "assumptions": {
+    "capexEgp": 1800000.0,
+    "monthlyVolumeUnits": 15000.0,
+    "unitPriceEgp": 65.0,
+    "unitMaterialCostEgp": 32.0,
+    "unitLaborCostEgp": 7.5,
+    "unitEnergyCostEgp": 3.0,
+    "unitTransportCostEgp": 2.5,
+    "monthlyFixedCostsEgp": 85000.0,
+    "rampUpMonths": 4
+  },
+  "capexBreakdown": [
+    { "item": "Tooling and multi-cavity precision molds", "egp": 950000.0 },
+    { "item": "Material pneumatic conveyance & drying system", "egp": 450000.0 },
+    { "item": "Quality testing and optical inspection equipment", "egp": 250000.0 },
+    { "item": "Installation, trial runs and worker certification", "egp": 150000.0 }
+  ],
+  "rationale": [
+    "Unit is 1 standard heavy-duty industrial storage container",
+    "Material resin sourced locally from Alexandria petrochemical hubs",
+    "Estimated prices aligned with current Egyptian wholesale market averages"
+  ],
+  "keyRisks": [
+    "Raw material resin price volatility indexed to international benchmarks",
+    "Grid electricity peak tariff adjustments"
+  ],
+  "confidence": 0.86
+}
+

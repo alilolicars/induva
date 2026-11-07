@@ -1,0 +1,140 @@
+@model DemandRequestDetailsDto
+@{
+    ViewData["Title"] = Model.Title;
+}
+
+<div class="mb-4">
+    <div class="d-flex justify-content-between align-items-start flex-wrap gap-2">
+        <div>
+            <div class="d-flex align-items-center gap-2 mb-1">
+                <h1 class="fw-bold mb-0">@Model.Title</h1>
+                <span class="badge @(Model.Status == "Open" ? "bg-success" : "bg-secondary")">@Model.Status</span>
+                @if (Model.IsExport)
+                {
+                    <span class="badge bg-warning-subtle text-warning-emphasis border">🌍 Export Order</span>
+                }
+            </div>
+            <p class="text-muted mb-0">
+                <span class="badge bg-primary-subtle text-primary border">@Model.Sector</span>
+                <span class="mx-2">·</span>
+                <span>📍 @Model.GovernorateName</span>
+                @if (Model.DeadlineUtc.HasValue)
+                {
+                    <span class="mx-2">·</span>
+                    <span>Deadline: <strong>@Model.DeadlineUtc.Value.ToString("dd MMM yyyy")</strong></span>
+                }
+            </p>
+        </div>
+        <div class="d-flex gap-2">
+            @if (Model.IsOwner)
+            {
+                <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-outline-secondary btn-sm">Edit Request</a>
+                @if (Model.Status == "Open")
+                {
+                    <form asp-action="Close" asp-route-id="@Model.Id" method="post"
+                          onsubmit="return confirm('Mark this demand request as closed?');"
+                          class="d-inline">
+                        <button type="submit" class="btn btn-outline-warning btn-sm">Close Request</button>
+                    </form>
+                }
+                <form asp-action="Delete" asp-route-id="@Model.Id" method="post"
+                      onsubmit="return confirm('Are you sure you want to delete this demand request?');"
+                      class="d-inline">
+                    <button type="submit" class="btn btn-outline-danger btn-sm">Delete</button>
+                </form>
+            }
+            else if (!string.IsNullOrEmpty(Model.RequesterUserId))
+            {
+                <partial name="_ConnectButtonAndModal" model="@(new SendConnectionModalViewModel {
+                    ToUserId = Model.RequesterUserId,
+                    RelatedType = MatchEntityType.DemandRequest,
+                    RelatedId = Model.Id,
+                    TargetTitle = Model.Title,
+                    Message = $"Hello, our facility has available capacity to produce {Model.ProductName} according to your RFQ specifications."
+                })" />
+            }
+        </div>
+    </div>
+</div>
+
+<div class="row g-4">
+    <div class="col-lg-8">
+        <!-- Order Specifications -->
+        <div class="card shadow-sm border-0 mb-4">
+            <div class="card-header bg-white py-3">
+                <h5 class="fw-bold mb-0">📋 Procurement Specifications & Requirements</h5>
+            </div>
+            <div class="card-body">
+                @if (string.IsNullOrWhiteSpace(Model.Description))
+                {
+                    <p class="text-muted mb-0">No additional technical specifications provided.</p>
+                }
+                else
+                {
+                    <p class="text-secondary mb-0" style="white-space: pre-line;">@Model.Description</p>
+                }
+            </div>
+        </div>
+
+        <!-- Required Capabilities -->
+        <div class="card shadow-sm border-0">
+            <div class="card-header bg-white py-3">
+                <h6 class="fw-bold mb-0">⚙️ Required Production Capabilities</h6>
+            </div>
+            <div class="card-body">
+                @if (Model.RequiredTags.Count == 0)
+                {
+                    <p class="text-muted small mb-0">No specific machine or capability tags attached.</p>
+                }
+                else
+                {
+                    <div class="d-flex flex-wrap gap-1">
+                        @foreach (var tag in Model.RequiredTags)
+                        {
+                            <span class="badge bg-secondary-subtle text-secondary border">@tag</span>
+                        }
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-4">
+        <!-- Commercial Snapshot -->
+        <div class="card shadow-sm border-0 mb-4">
+            <div class="card-header bg-white py-3">
+                <h6 class="fw-bold mb-0">💰 Commercial Details</h6>
+            </div>
+            <div class="card-body small">
+                <div class="d-flex justify-content-between py-2 border-bottom">
+                    <span class="text-muted">Target Product</span>
+                    <strong class="text-dark">@Model.ProductName</strong>
+                </div>
+                <div class="d-flex justify-content-between py-2 border-bottom">
+                    <span class="text-muted">Total Quantity</span>
+                    <strong class="text-dark">@Model.Quantity.ToString("N0") @Model.Unit</strong>
+                </div>
+                <div class="d-flex justify-content-between py-2 border-bottom">
+                    <span class="text-muted">Target Unit Price</span>
+                    <span class="text-success fw-bold">@(Model.TargetPriceEgp.HasValue ? $"{Model.TargetPriceEgp.Value:N2} EGP" : "Negotiable / Open")</span>
+                </div>
+                @if (Model.TargetPriceEgp.HasValue)
+                {
+                    <div class="d-flex justify-content-between py-2 border-bottom">
+                        <span class="text-muted">Total Order Value</span>
+                        <strong class="text-success">@((Model.Quantity * Model.TargetPriceEgp.Value).ToString("N0")) EGP</strong>
+                    </div>
+                }
+                <div class="d-flex justify-content-between py-2 border-bottom">
+                    <span class="text-muted">Delivery Destination</span>
+                    <span>@Model.GovernorateName</span>
+                </div>
+                <div class="d-flex justify-content-between py-2">
+                    <span class="text-muted">Procurement Scope</span>
+                    <span>@(Model.IsExport ? "International Export" : "Domestic Supply")</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

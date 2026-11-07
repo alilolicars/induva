@@ -1,0 +1,100 @@
+@model StartupFormViewModel
+@{
+    var isEdit = Model.Id.HasValue;
+    ViewData["Title"] = isEdit ? "Edit Startup" : "Register Industrial Startup";
+}
+
+<div class="row justify-content-center">
+    <div class="col-lg-9">
+        <div class="card shadow-sm border-0">
+            <div class="card-header bg-white py-3">
+                <h4 class="fw-bold mb-0">@(isEdit ? "Edit Startup Profile" : "Register Industrial Startup")</h4>
+                <p class="text-muted small mb-0">Connect with Egyptian factories to pilot, prototype, and manufacture your physical products.</p>
+            </div>
+            <div class="card-body p-4">
+                <form asp-action="@(isEdit ? "Edit" : "Create")" asp-route-id="@Model.Id" method="post">
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+
+                    <div class="mb-3">
+                        <label asp-for="Name" class="form-label fw-semibold"></label>
+                        <input asp-for="Name" class="form-control" placeholder="Startup or project name" />
+                        <span asp-validation-for="Name" class="text-danger small"></span>
+                    </div>
+
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-4">
+                            <label asp-for="Sector" class="form-label fw-semibold"></label>
+                            <select asp-for="Sector" asp-items="Html.GetEnumSelectList<Sector>()" class="form-select"></select>
+                            <span asp-validation-for="Sector" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-4">
+                            <label asp-for="Stage" class="form-label fw-semibold"></label>
+                            <select asp-for="Stage" asp-items="Html.GetEnumSelectList<StartupStage>()" class="form-select"></select>
+                            <span asp-validation-for="Stage" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-4">
+                            <label asp-for="GovernorateId" class="form-label fw-semibold"></label>
+                            <select asp-for="GovernorateId" asp-items="Model.Governorates" class="form-select">
+                                <option value="">Select Governorate (optional)...</option>
+                            </select>
+                            <span asp-validation-for="GovernorateId" class="text-danger small"></span>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="FundingNeededEgp" class="form-label fw-semibold"></label>
+                        <div class="input-group">
+                            <input asp-for="FundingNeededEgp" type="number" step="any" class="form-control" placeholder="e.g. 500000" />
+                            <span class="input-group-text">EGP</span>
+                        </div>
+                        <span asp-validation-for="FundingNeededEgp" class="text-danger small"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="ProductIdea" class="form-label fw-semibold"></label>
+                        <textarea asp-for="ProductIdea" class="form-control" rows="3" placeholder="What is the product, technology, or physical innovation? What problem does it solve?"></textarea>
+                        <span asp-validation-for="ProductIdea" class="text-danger small"></span>
+                    </div>
+
+                    <div class="mb-4">
+                        <label asp-for="Description" class="form-label fw-semibold"></label>
+                        <textarea asp-for="Description" class="form-control" rows="3" placeholder="Additional details on team, market validation, patents, or specific needs..."></textarea>
+                        <span asp-validation-for="Description" class="text-danger small"></span>
+                    </div>
+
+                    <!-- Capability Tags Multi-select -->
+                    <div class="mb-4">
+                        <label class="form-label fw-semibold mb-1">Required Manufacturing Capabilities</label>
+                        <p class="text-muted small mb-2">Check all processes and machine types your startup requires from partner factories:</p>
+                        <div class="border rounded p-3 bg-light" style="max-height: 220px; overflow-y: auto;">
+                            <div class="row g-2">
+                                @foreach (var tagItem in StartupFormViewModel.AvailableCapabilityTags)
+                                {
+                                    var isChecked = Model.SelectedTags.Contains(tagItem.Value);
+                                    <div class="col-sm-6 col-md-4">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" name="SelectedTags" value="@tagItem.Value" id="tag_@tagItem.Value" @(isChecked ? "checked" : "") />
+                                            <label class="form-check-label small" for="tag_@tagItem.Value">
+                                                @tagItem.Text
+                                            </label>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-center pt-3 border-top">
+                        <a asp-action="@(isEdit ? "Details" : "Index")" asp-route-id="@Model.Id" class="btn btn-outline-secondary">Cancel</a>
+                        <button type="submit" class="btn btn-primary px-4">@(isEdit ? "Update Startup" : "Register Startup")</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
+

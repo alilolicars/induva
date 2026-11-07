@@ -1,0 +1,95 @@
+@{
+    ViewData["Title"] = "Industrial & Resource Map";
+    var governorates = ViewBag.Governorates as IEnumerable<Induva.Application.Dtos.GovernorateDto> ?? [];
+    var selectedGovId = ViewBag.SelectedGovernorateId as int?;
+}
+
+@section Head {
+    <link rel="stylesheet" href="~/lib/leaflet/leaflet.css" />
+    <style>
+        #induva-map {
+            height: 680px;
+            width: 100%;
+            border-radius: 0.5rem;
+            z-index: 1;
+        }
+        .induva-popup {
+            min-width: 180px;
+            max-width: 260px;
+        }
+    </style>
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+    <div>
+        <h1 class="h2 fw-bold mb-1">🗺️ Egyptian Industrial & Resource Map</h1>
+        <p class="text-muted mb-0">Geographic distribution of manufacturing facilities, local raw material extractors, and active procurement demands.</p>
+    </div>
+</div>
+
+<div class="row g-3">
+    <!-- Map Controls Sidebar -->
+    <div class="col-lg-3">
+        <div class="card shadow-sm border-0 mb-3">
+            <div class="card-header bg-white py-3">
+                <h6 class="fw-bold mb-0">Layers & Filters</h6>
+            </div>
+            <div class="card-body">
+                <div class="mb-3">
+                    <label class="form-label small fw-bold text-muted">Governorate</label>
+                    <select id="governorate-select" class="form-select form-select-sm">
+                        <option value="">All Egypt (National Overview)</option>
+                        @foreach (var g in governorates)
+                        {
+                            <option value="@g.Id" selected="@(selectedGovId == g.Id)">@g.NameEn (@g.NameAr)</option>
+                        }
+                    </select>
+                </div>
+
+                <label class="form-label small fw-bold text-muted mb-2">Active Layers</label>
+                <div class="d-flex flex-column gap-2 mb-3">
+                    <div class="form-check">
+                        <input class="form-check-input layer-checkbox" type="checkbox" value="factories" id="layerFactories" checked>
+                        <label class="form-check-label small" for="layerFactories">
+                            🏭 <strong>Factories</strong> (Public facilities)
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input layer-checkbox" type="checkbox" value="suppliers" id="layerSuppliers" checked>
+                        <label class="form-check-label small" for="layerSuppliers">
+                            📦 <strong>Suppliers</strong> (Raw materials & feedstock)
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input layer-checkbox" type="checkbox" value="resources" id="layerResources" checked>
+                        <label class="form-check-label small" for="layerResources">
+                            ⛏️ <strong>Regional Resources</strong> (Reserves)
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input layer-checkbox" type="checkbox" value="demand" id="layerDemand" checked>
+                        <label class="form-check-label small" for="layerDemand">
+                            📑 <strong>Open Demand</strong> (Buyer RFQs)
+                        </label>
+                    </div>
+                </div>
+
+                <div class="alert alert-light border small text-muted mb-0">
+                    💡 Click on any marker to view capacity, products, and contact options.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Map Container -->
+    <div class="col-lg-9">
+        <div class="card shadow-sm border-0 p-1">
+            <div id="induva-map"></div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/lib/leaflet/leaflet.js"></script>
+    <script src="~/js/map.js" asp-append-version="true"></script>
+}

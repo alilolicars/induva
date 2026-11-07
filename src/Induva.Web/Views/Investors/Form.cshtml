@@ -1,0 +1,103 @@
+@model InvestorFormViewModel
+@{
+    var isEdit = Model.Id.HasValue;
+    ViewData["Title"] = isEdit ? "Manage Investor Profile" : "Register Investor Profile";
+    var allSectors = Enum.GetValues<Sector>();
+    var allStages = Enum.GetValues<StartupStage>();
+}
+
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="card shadow-sm border-0">
+            <div class="card-header bg-white py-3">
+                <h4 class="fw-bold mb-0">@(isEdit ? "Manage Investor Profile" : "Create Investor Profile")</h4>
+                <p class="text-muted small mb-0">Specify your investment criteria to connect with high-potential manufacturers and hardware startups.</p>
+            </div>
+            <div class="card-body p-4">
+                <form asp-action="Manage" method="post">
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+                    <input type="hidden" asp-for="Id" />
+
+                    <div class="mb-3">
+                        <label asp-for="DisplayName" class="form-label fw-semibold"></label>
+                        <input asp-for="DisplayName" class="form-control" placeholder="e.g. Nile Angel Syndicate or Delta Industrial Fund" />
+                        <span asp-validation-for="DisplayName" class="text-danger small"></span>
+                    </div>
+
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <label asp-for="MinTicketEgp" class="form-label fw-semibold"></label>
+                            <div class="input-group">
+                                <input asp-for="MinTicketEgp" type="number" step="any" class="form-control" placeholder="e.g. 200000" />
+                                <span class="input-group-text">EGP</span>
+                            </div>
+                            <span asp-validation-for="MinTicketEgp" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="MaxTicketEgp" class="form-label fw-semibold"></label>
+                            <div class="input-group">
+                                <input asp-for="MaxTicketEgp" type="number" step="any" class="form-control" placeholder="e.g. 5000000" />
+                                <span class="input-group-text">EGP</span>
+                            </div>
+                            <span asp-validation-for="MaxTicketEgp" class="text-danger small"></span>
+                        </div>
+                    </div>
+
+                    <!-- Sectors multi-select -->
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold mb-1">Target Sectors</label>
+                        <div class="border rounded p-3 bg-light">
+                            <div class="row g-2">
+                                @foreach (var sector in allSectors)
+                                {
+                                    var isChecked = Model.SelectedSectors.Contains(sector);
+                                    <div class="col-sm-6 col-md-4">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" name="SelectedSectors" value="@sector" id="sector_@sector" @(isChecked ? "checked" : "") />
+                                            <label class="form-check-label small" for="sector_@sector">@sector</label>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Stages multi-select -->
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold mb-1">Preferred Startup Stages</label>
+                        <div class="border rounded p-3 bg-light">
+                            <div class="row g-2">
+                                @foreach (var stage in allStages)
+                                {
+                                    var isChecked = Model.SelectedStages.Contains(stage);
+                                    <div class="col-sm-6 col-md-4">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" name="SelectedStages" value="@stage" id="stage_@stage" @(isChecked ? "checked" : "") />
+                                            <label class="form-check-label small" for="stage_@stage">@stage</label>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label asp-for="Bio" class="form-label fw-semibold"></label>
+                        <textarea asp-for="Bio" class="form-control" rows="4" placeholder="Overview of fund size, investment history, value-add, syndicate partners..."></textarea>
+                        <span asp-validation-for="Bio" class="text-danger small"></span>
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-center pt-3 border-top">
+                        <a asp-action="Index" class="btn btn-outline-secondary">Cancel</a>
+                        <button type="submit" class="btn btn-primary px-4">Save Investor Profile</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
+
