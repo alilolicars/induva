@@ -1,357 +1,592 @@
 @{
-    ViewData["Title"] = "Industry & Investment Development Platform for Egypt";
+    ViewData["Title"] = "INDUVA — Egypt's Industrial & Investment Platform";
     ViewData["IsLandingPage"] = true;
 }
 
-<!-- SECTION 2: HERO -->
-<section class="py-5" style="background-color: #F6F4EF; padding-top: 96px !important; padding-bottom: 72px !important;">
-    <div class="container" style="max-width: 1200px;">
+<!-- 2. Breathable Hero Section with 1-Click Case Study Switcher -->
+<header class="hero-wrapper">
+    <div class="container">
         <div class="row align-items-center g-5">
-            <!-- Left Column (6 cols) -->
+
+            <!-- Left Column: Clear Value Proposition -->
             <div class="col-lg-6">
-                <span class="eyebrow mb-3 d-inline-block">EGYPT'S INDUSTRIAL NETWORK</span>
-                <h1 class="display-headline mb-4" style="font-size: 56px; line-height: 60px; font-weight: 600; letter-spacing: -0.015em; color: #0E1B24;">
-                    Turn idle capacity into new revenue.
+                <!-- <div class="hero-pill">
+                    <span class="hero-pill-dot"></span>
+                    <span>Industrial &amp; Investment Network across 27 Governorates</span>
+                </div> -->
+
+                <h1 class="hero-headline">
+                    Turn <em>idle factory lines</em> into profitable new products &amp; partnerships.
                 </h1>
-                <p class="mb-4" style="font-size: 18px; line-height: 28px; color: #5B6670;">
-                    INDUVA connects raw materials, factories, suppliers, buyers, startups and investors across Egypt &mdash; and uses AI to find products, partners and opportunities you can't see yet.
+
+                <p class="hero-subtext">
+                    INDUVA connects Egypt's factories, local raw-material suppliers, startups, buyers, and investors—helping
+                    factories discover what else their machines can make during off-seasons and validating the numbers before
+                    investing.
                 </p>
-                <div class="d-flex flex-wrap gap-3 mb-4">
-                    <a asp-controller="Factories" asp-action="Index" class="btn-primary-teal">Explore factories</a>
-                    <a asp-controller="Account" asp-action="Register" class="btn-secondary-white">Create free account</a>
+
+                <div class="d-flex flex-wrap gap-3">
+                    <a asp-controller="Map" asp-action="Index" class="btn-primary-induva">
+                        <span>Explore Resource Map</span>
+                        <span>→</span>
+                    </a>
+                    <a asp-controller="Factories" asp-action="Index" class="btn-secondary-induva">
+                        <span>Browse Factories</span>
+                    </a>
                 </div>
-                <div class="d-flex align-items-center gap-2 small text-muted" style="color: #5B6670;">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#2E7D5B" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                        <polyline points="20 6 9 17 4 12"/>
-                    </svg>
-                    <span>Free to join &middot; Works for all 27 governorates</span>
+
+                <div class="trust-metrics">
+                    <div>
+                        <div class="trust-metric-num">27</div>
+                        <div class="trust-metric-label">Governorates Mapped</div>
+                    </div>
+                    <div>
+                        <div class="trust-metric-num">5 Roles</div>
+                        <div class="trust-metric-label">Factories, Suppliers, Startups, Buyers &amp; Investors</div>
+                    </div>
+                    <div>
+                        <div class="trust-metric-num">3-Scenario</div>
+                        <div class="trust-metric-label">Instant Payback &amp; ROI Calculator</div>
+                    </div>
                 </div>
             </div>
 
-            <!-- Right Column (6 cols) - Frameless, Generous Image -->
-            <div class="col-lg-6 d-flex align-items-center justify-content-center justify-content-lg-end">
-                <img src="~/images/landing/hero-factory.webp" alt="Egyptian Factory Processing" class="img-fluid" style="max-height: 480px; width: 100%; max-width: 580px; object-fit: contain; border: none; outline: none; box-shadow: none;" />
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- SECTION 3: FACTS STRIP (Contained in card, does not take full page width, numbers increase on scroll) -->
-<section class="pb-5 pt-2" style="background-color: #F6F4EF;">
-    <div class="container" style="max-width: 1200px;">
-        <div id="facts-strip-card" class="bg-white border rounded-4 py-4 px-3 shadow-sm" style="border-color: #E3DFD6 !important;">
-            <div class="row g-4 text-center align-items-center">
-                <div class="col-6 col-md-3 border-end" style="border-color: #E3DFD6 !important;">
-                    <div class="d-flex align-items-center justify-content-center gap-2 mb-1">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0B5563" stroke-width="1.75"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
-                        <span class="display-6 font-mono fw-bold text-dark count-up" data-target="27" style="font-size: 32px;">0</span>
-                    </div>
-                    <div class="small text-muted" style="color: #5B6670;">Governorates mapped</div>
-                </div>
-                <div class="col-6 col-md-3 border-end-md" style="border-color: #E3DFD6 !important;">
-                    <div class="d-flex align-items-center justify-content-center gap-2 mb-1">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0B5563" stroke-width="1.75"><path d="m12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83Z"/><path d="m22 17.65-9.17 4.16a2 2 0 0 1-1.66 0L2 17.65"/><path d="m22 12.65-9.17 4.16a2 2 0 0 1-1.66 0L2 12.65"/></svg>
-                        <span class="display-6 font-mono fw-bold text-dark count-up" data-target="23" style="font-size: 32px;">0</span>
-                    </div>
-                    <div class="small text-muted" style="color: #5B6670;">Raw materials tracked</div>
-                </div>
-                <div class="col-6 col-md-3 border-end" style="border-color: #E3DFD6 !important;">
-                    <div class="d-flex align-items-center justify-content-center gap-2 mb-1">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#C96A2B" stroke-width="1.75"><path d="m12 3-1.9 5.8a2 2 0 0 1-1.3 1.3L3 12l5.8 1.9a2 2 0 0 1 1.3 1.3L12 21l1.9-5.8a2 2 0 0 1 1.3-1.3L21 12l-5.8-1.9a2 2 0 0 1-1.3-1.3Z"/></svg>
-                        <span class="display-6 font-mono fw-bold text-dark count-up" data-target="5" style="font-size: 32px;">0</span>
-                    </div>
-                    <div class="small text-muted" style="color: #5B6670;">AI-assisted tools</div>
-                </div>
-                <div class="col-6 col-md-3">
-                    <div class="d-flex align-items-center justify-content-center gap-2 mb-1">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0B5563" stroke-width="1.75"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-                        <span class="display-6 font-mono fw-bold text-dark count-up" data-target="6" style="font-size: 32px;">0</span>
-                    </div>
-                    <div class="small text-muted" style="color: #5B6670;">Participant types</div>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- SECTION 4: HOW IT WORKS (Beige background removed from behind each image) -->
-<section class="py-5" style="background-color: #F6F4EF; padding-top: 64px !important; padding-bottom: 80px !important;">
-    <div class="container" style="max-width: 1200px;">
-        <div class="text-center mb-5">
-            <span class="eyebrow d-block mb-2">HOW IT WORKS</span>
-            <h2 class="fw-bold" style="font-size: 30px; line-height: 36px; color: #0E1B24;">
-                From machine list to matched partners in three steps
-            </h2>
-        </div>
-
-        <div class="row g-4">
-            <!-- Step 01 -->
-            <div class="col-md-4">
-                <div class="card-induva h-100 d-flex flex-column text-start">
-                    <div class="mb-3 text-center p-2 rounded-3">
-                        <img src="~/images/landing/step-01-factory.webp" alt="Profile factory" class="img-fluid" style="max-height: 140px; object-fit: contain;" />
-                    </div>
-                    <div class="font-mono fw-bold mb-2" style="font-size: 28px; color: #0B5563;">01</div>
-                    <h3 class="fw-semibold mb-2" style="font-size: 20px; line-height: 28px; color: #0E1B24;">Profile your factory</h3>
-                    <p class="text-muted mb-0" style="font-size: 15px; line-height: 24px; color: #5B6670;">
-                        Add machines, products and the months your lines sit idle.
-                    </p>
-                </div>
-            </div>
-
-            <!-- Step 02 -->
-            <div class="col-md-4">
-                <div class="card-induva h-100 d-flex flex-column text-start">
-                    <div class="mb-3 text-center p-2 rounded-3">
-                        <img src="~/images/landing/step-02-analysis.webp" alt="AI analysis" class="img-fluid" style="max-height: 140px; object-fit: contain;" />
-                    </div>
-                    <div class="font-mono fw-bold mb-2" style="font-size: 28px; color: #0B5563;">02</div>
-                    <h3 class="fw-semibold mb-2" style="font-size: 20px; line-height: 28px; color: #0E1B24;">Get AI analysis & ideas</h3>
-                    <p class="text-muted mb-0" style="font-size: 15px; line-height: 24px; color: #5B6670;">
-                        See your capabilities, new product options and demand outlook.
-                    </p>
-                </div>
-            </div>
-
-            <!-- Step 03 -->
-            <div class="col-md-4">
-                <div class="card-induva h-100 d-flex flex-column text-start">
-                    <div class="mb-3 text-center p-2 rounded-3">
-                        <img src="~/images/landing/step-03-matching.webp" alt="Match and connect" class="img-fluid" style="max-height: 140px; object-fit: contain;" />
-                    </div>
-                    <div class="font-mono fw-bold mb-2" style="font-size: 28px; color: #0B5563;">03</div>
-                    <h3 class="fw-semibold mb-2" style="font-size: 20px; line-height: 28px; color: #0E1B24;">Match and connect</h3>
-                    <p class="text-muted mb-0" style="font-size: 15px; line-height: 24px; color: #5B6670;">
-                        Reach suppliers, buyers and investors that fit &mdash; ranked by score and distance.
-                    </p>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- SECTION 5: FEATURES GRID -->
-<section class="py-5 bg-white border-top border-bottom" style="border-color: #E3DFD6 !important; padding-top: 80px !important; padding-bottom: 80px !important;">
-    <div class="container" style="max-width: 1200px;">
-        <div class="text-center mb-5">
-            <h2 class="fw-bold" style="font-size: 30px; line-height: 36px; color: #0E1B24;">
-                Everything between raw material and market
-            </h2>
-        </div>
-
-        <div class="row g-4">
-            <!-- Feature 1 -->
-            <div class="col-md-6 col-lg-4">
-                <div class="card-induva h-100 d-flex flex-column">
-                    <div class="d-inline-flex align-items-center justify-content-center rounded-3 mb-3" style="width: 44px; height: 44px; background-color: #E3F1F3;">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0B5563" stroke-width="1.75"><path d="m3 6 6-3 6 3 6-3v15l-6 3-6-3-6 3Z"/><path d="M9 3v15"/><path d="M15 6v15"/></svg>
-                    </div>
-                    <h3 class="fw-semibold mb-2" style="font-size: 20px; line-height: 28px; color: #0E1B24;">Resource & opportunity map</h3>
-                    <p class="text-muted flex-grow-1" style="font-size: 15px; line-height: 24px; color: #5B6670;">
-                        See factories, suppliers and raw materials across all governorates.
-                    </p>
-                    <a asp-controller="Map" asp-action="Index" class="fw-semibold text-decoration-none mt-2" style="color: #0B5563; font-size: 15px;">Learn more &rarr;</a>
-                </div>
-            </div>
-
-            <!-- Feature 2 -->
-            <div class="col-md-6 col-lg-4">
-                <div class="card-induva h-100 d-flex flex-column">
-                    <div class="d-inline-flex align-items-center justify-content-center rounded-3 mb-3" style="width: 44px; height: 44px; background-color: #E3F1F3;">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0B5563" stroke-width="1.75"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-                    </div>
-                    <h3 class="fw-semibold mb-2" style="font-size: 20px; line-height: 28px; color: #0E1B24;">Idle capacity marketplace</h3>
-                    <p class="text-muted flex-grow-1" style="font-size: 15px; line-height: 24px; color: #5B6670;">
-                        Put seasonal downtime to work with new orders and partners.
-                    </p>
-                    <a asp-controller="Factories" asp-action="Index" class="fw-semibold text-decoration-none mt-2" style="color: #0B5563; font-size: 15px;">Learn more &rarr;</a>
-                </div>
-            </div>
-
-            <!-- Feature 3 (AI) -->
-            <div class="col-md-6 col-lg-4">
-                <div class="card-induva h-100 d-flex flex-column">
-                    <div class="d-inline-flex align-items-center justify-content-center rounded-3 mb-3" style="width: 44px; height: 44px; background-color: #FBEBDD;">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#C96A2B" stroke-width="1.75"><path d="m12 3-1.9 5.8a2 2 0 0 1-1.3 1.3L3 12l5.8 1.9a2 2 0 0 1 1.3 1.3L12 21l1.9-5.8a2 2 0 0 1 1.3-1.3L21 12l-5.8-1.9a2 2 0 0 1-1.3-1.3Z"/></svg>
-                    </div>
-                    <h3 class="fw-semibold mb-2" style="font-size: 20px; line-height: 28px; color: #0E1B24;">New product discovery</h3>
-                    <p class="text-muted flex-grow-1" style="font-size: 15px; line-height: 24px; color: #5B6670;">
-                        AI suggests products your existing machines can already make.
-                    </p>
-                    <a asp-controller="ProductSuggestions" asp-action="Index" class="fw-semibold text-decoration-none mt-2" style="color: #0B5563; font-size: 15px;">Learn more &rarr;</a>
-                </div>
-            </div>
-
-            <!-- Feature 4 -->
-            <div class="col-md-6 col-lg-4">
-                <div class="card-induva h-100 d-flex flex-column">
-                    <div class="d-inline-flex align-items-center justify-content-center rounded-3 mb-3" style="width: 44px; height: 44px; background-color: #E3F1F3;">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0B5563" stroke-width="1.75"><circle cx="18" cy="18" r="3"/><circle cx="6" cy="6" r="3"/><path d="M6 9v12"/><path d="M18 9a9 9 0 0 1-9 9"/></svg>
-                    </div>
-                    <h3 class="fw-semibold mb-2" style="font-size: 20px; line-height: 28px; color: #0E1B24;">Supply & demand matching</h3>
-                    <p class="text-muted flex-grow-1" style="font-size: 15px; line-height: 24px; color: #5B6670;">
-                        Rules plus AI rank the best suppliers, buyers and investors.
-                    </p>
-                    <a asp-controller="Matching" asp-action="Index" class="fw-semibold text-decoration-none mt-2" style="color: #0B5563; font-size: 15px;">Learn more &rarr;</a>
-                </div>
-            </div>
-
-            <!-- Feature 5 -->
-            <div class="col-md-6 col-lg-4">
-                <div class="card-induva h-100 d-flex flex-column">
-                    <div class="d-inline-flex align-items-center justify-content-center rounded-3 mb-3" style="width: 44px; height: 44px; background-color: #E3F1F3;">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0B5563" stroke-width="1.75"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/></svg>
-                    </div>
-                    <h3 class="fw-semibold mb-2" style="font-size: 20px; line-height: 28px; color: #0E1B24;">Startups meet investors</h3>
-                    <p class="text-muted flex-grow-1" style="font-size: 15px; line-height: 24px; color: #5B6670;">
-                        Pitch ideas, filter by sector and stage, connect directly.
-                    </p>
-                    <a asp-controller="Startups" asp-action="Index" class="fw-semibold text-decoration-none mt-2" style="color: #0B5563; font-size: 15px;">Learn more &rarr;</a>
-                </div>
-            </div>
-
-            <!-- Feature 6 (AI) -->
-            <div class="col-md-6 col-lg-4">
-                <div class="card-induva h-100 d-flex flex-column">
-                    <div class="d-inline-flex align-items-center justify-content-center rounded-3 mb-3" style="width: 44px; height: 44px; background-color: #FBEBDD;">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#C96A2B" stroke-width="1.75"><rect width="16" height="20" x="4" y="2" rx="2"/><line x1="8" x2="16" y1="6" y2="6"/><line x1="16" x2="16" y1="14" y2="18"/><path d="M16 10h.01"/><path d="M12 10h.01"/><path d="M8 10h.01"/><path d="M12 14h.01"/><path d="M8 14h.01"/><path d="M12 18h.01"/><path d="M8 18h.01"/></svg>
-                    </div>
-                    <h3 class="fw-semibold mb-2" style="font-size: 20px; line-height: 28px; color: #0E1B24;">Investment feasibility</h3>
-                    <p class="text-muted flex-grow-1" style="font-size: 15px; line-height: 24px; color: #5B6670;">
-                        Edit the assumptions and see payback, ROI and scenarios instantly.
-                    </p>
-                    <a asp-controller="Investments" asp-action="Index" class="fw-semibold text-decoration-none mt-2" style="color: #0B5563; font-size: 15px;">Learn more &rarr;</a>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- SECTION 6: WHO IT'S FOR (Updated Factory Owners Image from Downloads) -->
-<section class="py-5" style="background-color: #F6F4EF; padding-top: 80px !important; padding-bottom: 80px !important;">
-    <div class="container" style="max-width: 1200px;">
-        <div class="text-center mb-5">
-            <h2 class="fw-bold" style="font-size: 30px; line-height: 36px; color: #0E1B24;">
-                Built for every link in the chain
-            </h2>
-        </div>
-
-        <div class="row g-3">
-            <!-- 1. Factory owners (Replaced with new isometric factory image) -->
-            <div class="col">
-                <div class="card-induva h-100 text-center p-3">
-                    <div class="mb-3 d-flex align-items-center justify-content-center" style="height: 60px;">
-                        <img src="~/images/landing/مصنع صناعي بتصميم إيزومتري.webp" alt="Factory owners" class="img-fluid" style="max-height: 58px; object-fit: contain;" />
-                    </div>
-                    <div class="fw-semibold text-dark small mb-1" style="font-size: 14px;">Factory owners</div>
-                    <div class="small text-muted" style="font-size: 12px; color: #5B6670;">Fill idle capacity</div>
-                </div>
-            </div>
-
-            <!-- 2. Suppliers -->
-            <div class="col">
-                <div class="card-induva h-100 text-center p-3">
-                    <div class="mb-3 d-flex align-items-center justify-content-center" style="height: 60px;">
-                        <img src="~/images/landing/who-suppliers.webp" alt="Suppliers" class="img-fluid" style="max-height: 54px; object-fit: contain;" />
-                    </div>
-                    <div class="fw-semibold text-dark small mb-1" style="font-size: 14px;">Suppliers</div>
-                    <div class="small text-muted" style="font-size: 12px; color: #5B6670;">Reach new factories</div>
-                </div>
-            </div>
-
-            <!-- 3. Startups -->
-            <div class="col">
-                <div class="card-induva h-100 text-center p-3">
-                    <div class="mb-3 d-flex align-items-center justify-content-center" style="height: 60px;">
-                        <img src="~/images/landing/who-startups.webp" alt="Startups" class="img-fluid" style="max-height: 54px; object-fit: contain;" />
-                    </div>
-                    <div class="fw-semibold text-dark small mb-1" style="font-size: 14px;">Startups</div>
-                    <div class="small text-muted" style="font-size: 12px; color: #5B6670;">Find makers and funding</div>
-                </div>
-            </div>
-
-            <!-- 4. Investors -->
-            <div class="col">
-                <div class="card-induva h-100 text-center p-3">
-                    <div class="mb-3 d-flex align-items-center justify-content-center" style="height: 60px;">
-                        <img src="~/images/landing/who-investors.webp" alt="Investors" class="img-fluid" style="max-height: 54px; object-fit: contain;" />
-                    </div>
-                    <div class="fw-semibold text-dark small mb-1" style="font-size: 14px;">Investors</div>
-                    <div class="small text-muted" style="font-size: 12px; color: #5B6670;">Discover vetted fits</div>
-                </div>
-            </div>
-
-            <!-- 5. Buyers -->
-            <div class="col">
-                <div class="card-induva h-100 text-center p-3">
-                    <div class="mb-3 d-flex align-items-center justify-content-center" style="height: 60px;">
-                        <img src="~/images/landing/who-buyers.webp" alt="Buyers" class="img-fluid" style="max-height: 54px; object-fit: contain;" />
-                    </div>
-                    <div class="fw-semibold text-dark small mb-1" style="font-size: 14px;">Buyers</div>
-                    <div class="small text-muted" style="font-size: 12px; color: #5B6670;">Post demand, find producers</div>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- SECTION 7: EXAMPLE BAND -->
-<section class="py-5" style="background-color: #0E1B24; color: #FFFFFF; padding-top: 80px !important; padding-bottom: 80px !important;">
-    <div class="container" style="max-width: 1200px;">
-        <div class="row align-items-center g-5">
+            <!-- Right Column: Clean Interactive Story Card -->
             <div class="col-lg-6">
-                <span class="eyebrow d-block mb-3" style="color: #4EA5B3;">EXAMPLE</span>
-                <h2 class="display-6 fw-bold text-white mb-3" style="font-size: 32px; line-height: 40px;">
-                    A tomato canner that sits idle five months a year
-                </h2>
-                <p class="mb-4" style="color: #A4B3C0; font-size: 16px; line-height: 26px;">
-                    INDUVA analyzes its machines, suggests sauces and jams, forecasts the demand peaks, and matches it with a grower cooperative and a buyer.
-                </p>
+                <div class="story-showcase-card">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span class="small fw-semibold text-secondary">Real Platform Scenarios</span>
+                        <span class="badge-soft badge-emerald">Interactive Preview</span>
+                    </div>
 
-                <!-- 4-Step Process Flow -->
-                <div class="d-flex flex-wrap align-items-center gap-2">
-                    <span class="badge border py-2 px-3 fw-medium" style="border-color: rgba(255,255,255,0.2) !important; background-color: rgba(255,255,255,0.05); color: #FFFFFF; font-size: 13px;">
-                        Idle Oct&ndash;Feb
-                    </span>
-                    <span style="color: #4EA5B3;">&rarr;</span>
-                    <span class="badge border py-2 px-3 fw-medium" style="border-color: rgba(255,255,255,0.2) !important; background-color: rgba(255,255,255,0.05); color: #FFFFFF; font-size: 13px;">
-                        New product ideas
-                    </span>
-                    <span style="color: #4EA5B3;">&rarr;</span>
-                    <span class="badge border py-2 px-3 fw-medium" style="border-color: rgba(255,255,255,0.2) !important; background-color: rgba(255,255,255,0.05); color: #FFFFFF; font-size: 13px;">
-                        Demand forecast
-                    </span>
-                    <span style="color: #4EA5B3;">&rarr;</span>
-                    <span class="badge border py-2 px-3 fw-medium" style="border-color: rgba(255,255,255,0.2) !important; background-color: rgba(255,255,255,0.05); color: #FFFFFF; font-size: 13px;">
-                        Matched partners
-                    </span>
+                    <!-- 3 Golden Factory Story Tabs -->
+                    <div class="story-tabs" id="storySwitcher" role="tablist">
+                        <button type="button" class="story-tab-btn active" data-story="tomato">Sharqia Canning</button>
+                        <button type="button" class="story-tab-btn" data-story="plastics">10th Plastics</button>
+                        <button type="button" class="story-tab-btn" data-story="sugar">Aswan Sugar Mill</button>
+                    </div>
+
+                    <div class="story-body" id="storyContent">
+                        <!-- Factory Header -->
+                        <div class="d-flex justify-content-between align-items-start mb-3">
+                            <div>
+                                <h4 class="h5 fw-bold mb-1" id="stName">Delta Tomato Canning Co.</h4>
+                                <div class="small text-secondary" id="stLocation">Sharqia Governorate · Food Processing</div>
+                            </div>
+                            <span class="badge-soft badge-terracotta" id="stIdle">80% Idle (Oct–Feb)</span>
+                        </div>
+
+                        <!-- Step 1: Current Situation -->
+                        <div class="flow-box">
+                            <div class="flow-step-label">1. Existing Equipment &amp; Off-Season Gap</div>
+                            <div class="small text-dark" id="stMachines">
+                                Retort sterilizers, vacuum evaporators, and can seamers sit 80% underutilized for 5 months after the
+                                summer tomato harvest.
+                            </div>
+                        </div>
+
+                        <!-- Step 2: Recommended Opportunity -->
+                        <div class="flow-box">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="flow-step-label mb-0">2. Suggested Off-Season Product</div>
+                                <span class="badge-soft badge-amber" id="stPeak">Peaks Pre-Ramadan</span>
+                            </div>
+                            <div class="fw-bold mt-1" id="stProduct">Ready-to-Eat Fava Beans &amp; Legume Canning</div>
+                            <div class="small text-secondary mt-1" id="stMatch">
+                                Uses 100% existing canning lines · Matched with 2 local suppliers &amp; an open Port Said export
+                                request.
+                            </div>
+                        </div>
+
+                        <!-- Step 3: Financial Snapshot -->
+                        <div class="outcome-kpi-row">
+                            <div class="outcome-kpi-box">
+                                <div class="outcome-kpi-val" id="stMargin">28.6%</div>
+                                <div class="outcome-kpi-caption">Est. Unit Margin</div>
+                            </div>
+                            <div class="outcome-kpi-box">
+                                <div class="outcome-kpi-val" id="stPayback">7 Months</div>
+                                <div class="outcome-kpi-caption">Est. Payback</div>
+                            </div>
+                            <div class="outcome-kpi-box">
+                                <div class="outcome-kpi-val text-success" id="stRoi">+184%</div>
+                                <div class="outcome-kpi-caption">3-Year ROI</div>
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-between align-items-center mt-3 pt-2">
+                            <span class="small text-muted" style="font-size: 0.76rem;">
+                                Indicative AI &amp; financial model estimate
+                            </span>
+                            <a href="/Factories/Details/1" id="stLink" class="small fw-semibold text-decoration-none"
+                               style="color: var(--accent-terracotta);">
+                                View Factory Profile →
+                            </a>
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            <div class="col-lg-6 text-center">
-                <img src="~/images/landing/example-canning.webp" alt="Tomato canning isometric production line" class="img-fluid rounded-4 shadow" style="max-height: 320px; object-fit: contain;" />
+        </div>
+    </div>
+</header>
+
+<!-- 3. How INDUVA Works (4 Clear, Jargon-Free Steps) -->
+<section class="section-block" style="background-color: var(--bg-subtle);">
+    <div class="container">
+        <div class="text-center max-w-2xl mx-auto mb-5" style="max-width: 640px;">
+            <span class="section-eyebrow">How It Works</span>
+            <h2 class="section-title">From Idle Machines to Verified Deals in Four Steps</h2>
+            <p class="text-secondary mb-0">
+                Whether you own a factory with seasonal downtime or a startup looking for a production line, INDUVA guides
+                every decision with grounded data.
+            </p>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-md-6 col-lg-3">
+                <div class="step-card">
+                    <div class="step-number-circle">01</div>
+                    <h3 class="h5 fw-bold mb-2">Map Capabilities</h3>
+                    <p class="small text-secondary mb-0">
+                        Factories list their machines, capacities, and idle months. INDUVA translates your equipment into
+                        standardized manufacturing capabilities.
+                    </p>
+                </div>
+            </div>
+
+            <div class="col-md-6 col-lg-3">
+                <div class="step-card">
+                    <div class="step-number-circle">02</div>
+                    <h3 class="h5 fw-bold mb-2">Discover Products</h3>
+                    <p class="small text-secondary mb-0">
+                        Get up to 5 alternative product ideas tailored to your exact machines, nearby governorate raw materials,
+                        and seasonal demand waves.
+                    </p>
+                </div>
+            </div>
+
+            <div class="col-md-6 col-lg-3">
+                <div class="step-card">
+                    <div class="step-number-circle">03</div>
+                    <h3 class="h5 fw-bold mb-2">Simulate ROI &amp; Costs</h3>
+                    <p class="small text-secondary mb-0">
+                        Test Conservative, Base, and Optimistic financial scenarios. Edit prices, volumes, or costs anytime to
+                        recalculate payback and break-even instantly.
+                    </p>
+                </div>
+            </div>
+
+            <div class="col-md-6 col-lg-3">
+                <div class="step-card">
+                    <div class="step-number-circle">04</div>
+                    <h3 class="h5 fw-bold mb-2">Match &amp; Connect</h3>
+                    <p class="small text-secondary mb-0">
+                        Get ranked matches with raw-material suppliers, buyers with open RFQs, startups needing production, and
+                        sector-aligned investors.
+                    </p>
+                </div>
             </div>
         </div>
     </div>
 </section>
 
-<!-- SECTION 8: FINAL CTA -->
-<section class="py-5" style="background-color: #F6F4EF; padding-top: 96px !important; padding-bottom: 96px !important;">
-    <div class="container" style="max-width: 800px;">
-        <div class="card-induva text-center p-5 position-relative overflow-hidden shadow-sm" style="background-color: #FFFFFF; border-radius: 16px;">
-            <div class="position-relative" style="z-index: 2;">
-                <h2 class="fw-bold mb-2" style="font-size: 32px; color: #0E1B24;">Start with your factory profile</h2>
-                <p class="text-muted mb-4" style="font-size: 16px; color: #5B6670;">It takes about five minutes.</p>
-                <div class="d-flex justify-content-center gap-3 flex-wrap">
-                    <a asp-controller="Account" asp-action="Register" class="btn-primary-teal">Create free account</a>
-                    <a asp-controller="Map" asp-action="Index" class="btn-secondary-white">Browse the map</a>
+<!-- 4. Clean Tabbed Opportunity Explorer -->
+<section class="section-block">
+    <div class="container">
+        <div class="d-flex flex-column flex-lg-row justify-content-between align-items-lg-end mb-4 gap-3">
+            <div>
+                <span class="section-eyebrow">Live Directory Preview</span>
+                <h2 class="section-title mb-0">Explore Egypt's Industrial Network</h2>
+            </div>
+
+            <div class="filter-pill-bar" id="directoryTabs">
+                <button type="button" class="filter-pill-btn active" data-category="factories">Factories</button>
+                <button type="button" class="filter-pill-btn" data-category="demand">Buyer Requests (RFQs)</button>
+                <button type="button" class="filter-pill-btn" data-category="suppliers">Raw Suppliers</button>
+                <button type="button" class="filter-pill-btn" data-category="startups">Startups</button>
+            </div>
+        </div>
+
+        <!-- 3 Airy Cards Rendered Cleanly via JS -->
+        <div class="row g-4" id="opportunityGrid"></div>
+
+        <div class="text-center mt-5">
+            <a asp-controller="Map" asp-action="Index" class="btn-secondary-induva">
+                <span>Open Full Interactive Map (All 27 Governorates)</span>
+                <span>↗</span>
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- 5. Role-Based Onboarding Banner -->
+<section class="pb-5">
+    <div class="container">
+        <div class="roles-surface">
+            <div class="row align-items-end mb-4">
+                <div class="col-lg-7">
+                    <span class="section-eyebrow" style="color: #f39c73;">Join the Ecosystem</span>
+                    <h2 class="font-display h2 fw-semibold mb-1">Built for Every Side of Egyptian Industry</h2>
+                    <p class="mb-0" style="color: rgba(255,255,255,0.72);">
+                        Choose your role to create your profile and start matching in minutes.
+                    </p>
                 </div>
             </div>
 
-            <!-- Skyline illustration decoration at bottom of card -->
-            <div class="mt-4 pt-3 opacity-25">
-                <img src="~/images/landing/cta-skyline.webp" alt="Egyptian Industrial Skyline" class="img-fluid" style="max-height: 90px; width: 100%; object-fit: cover; object-position: bottom;" />
+            <div class="row g-3">
+                <div class="col-md-6 col-lg">
+                    <a asp-controller="Account" asp-action="Register" asp-route-role="FactoryOwner" class="role-portal-card">
+                        <div>
+                            <div class="small fw-semibold mb-2" style="color: #f39c73;">Factory Owner</div>
+                            <p class="small mb-3" style="color: rgba(255,255,255,0.75);">
+                                Fill seasonal downtime, discover alternative products, and find verified buyers.
+                            </p>
+                        </div>
+                        <span class="small fw-semibold">Register Factory →</span>
+                    </a>
+                </div>
+
+                <div class="col-md-6 col-lg">
+                    <a asp-controller="Account" asp-action="Register" asp-route-role="Supplier" class="role-portal-card">
+                        <div>
+                            <div class="small fw-semibold mb-2" style="color: #f39c73;">Raw Supplier</div>
+                            <p class="small mb-3" style="color: rgba(255,255,255,0.75);">
+                                List agricultural, mineral, or chemical materials and connect with nearby plants.
+                            </p>
+                        </div>
+                        <span class="small fw-semibold">Register Supplier →</span>
+                    </a>
+                </div>
+
+                <div class="col-md-6 col-lg">
+                    <a asp-controller="Account" asp-action="Register" asp-route-role="Startup" class="role-portal-card">
+                        <div>
+                            <div class="small fw-semibold mb-2" style="color: #f39c73;">Startup Founder</div>
+                            <p class="small mb-3" style="color: rgba(255,255,255,0.75);">
+                                Manufacture your product on existing factory lines without building a plant from scratch.
+                            </p>
+                        </div>
+                        <span class="small fw-semibold">Register Startup →</span>
+                    </a>
+                </div>
+
+                <div class="col-md-6 col-lg">
+                    <a asp-controller="Account" asp-action="Register" asp-route-role="Investor" class="role-portal-card">
+                        <div>
+                            <div class="small fw-semibold mb-2" style="color: #f39c73;">Investor</div>
+                            <p class="small mb-3" style="color: rgba(255,255,255,0.75);">
+                                Explore de-risked manufacturing expansions and startups with transparent unit economics.
+                            </p>
+                        </div>
+                        <span class="small fw-semibold">Register Investor →</span>
+                    </a>
+                </div>
+
+                <div class="col-md-12 col-lg">
+                    <a asp-controller="Account" asp-action="Register" asp-route-role="Buyer" class="role-portal-card">
+                        <div>
+                            <div class="small fw-semibold mb-2" style="color: #f39c73;">Buyer / Exporter</div>
+                            <p class="small mb-3" style="color: rgba(255,255,255,0.75);">
+                                Post custom manufacturing requests (RFQs) and get matched with capable Egyptian factories.
+                            </p>
+                        </div>
+                        <span class="small fw-semibold">Post a Request →</span>
+                    </a>
+                </div>
             </div>
         </div>
     </div>
 </section>
+
+@section Scripts {
+    <script>
+        // 1. Hero Case Study Data (Golden Factories from Spec)
+        const stories = {
+            tomato: {
+                name: "Delta Tomato Canning Co.",
+                location: "Sharqia Governorate · Food Processing",
+                idle: "80% Idle (Oct–Feb)",
+                machines: "Retort sterilizers, vacuum evaporators, and can seamers sit 80% underutilized for 5 months after the summer tomato harvest.",
+                peak: "Peaks Pre-Ramadan",
+                product: "Ready-to-Eat Fava Beans & Legume Canning",
+                match: "Uses 100% existing canning lines · Matched with 2 local suppliers & an open Port Said export request.",
+                margin: "28.6%",
+                payback: "7 Months",
+                roi: "+184%",
+                link: "@Url.Action("Details", "Factories", new { id = 1 })"
+            },
+            plastics: {
+                name: "Tenth Plastics",
+                location: "Sharqia Governorate · Plastics & Packaging",
+                idle: "25% Idle (Dec–Feb)",
+                machines: "Six injection-molding lines (150T & 250T) and a single-screw extruder have spare winter capacity.",
+                peak: "High Harvest Demand",
+                product: "Ventilated Agricultural Crates (Recycled HDPE)",
+                match: "Matched with Qalyubia recycled plastic flakes supplier & a 5,000-crate buyer request in Dakahlia.",
+                margin: "31.2%",
+                payback: "5 Months",
+                roi: "+212%",
+                link: "@Url.Action("Details", "Factories", new { id = 3 })"
+            },
+            sugar: {
+                name: "Kom Ombo Sugar Mill",
+                location: "Aswan Governorate · Agro-Processing",
+                idle: "90% Idle (Jun–Dec)",
+                machines: "Industrial evaporators, boilers, and centrifuges sit idle between June and December outside sugarcane season.",
+                peak: "Export & Autumn Peak",
+                product: "Concentrated Date Syrup (Dibs) & Liquid Sweeteners",
+                match: "Sources abundant Aswan dates locally · Low transport cost and high autumn confectionery demand.",
+                margin: "24.0%",
+                payback: "9 Months",
+                roi: "+143%",
+                link: "@Url.Action("Details", "Factories", new { id = 6 })"
+            }
+        };
+
+        const storyContent = document.getElementById("storyContent");
+
+        function updateStory(key) {
+            const s = stories[key];
+            if (!s || !storyContent) return;
+
+            storyContent.classList.add("fade-out");
+            setTimeout(() => {
+                const elName = document.getElementById("stName");
+                const elLoc = document.getElementById("stLocation");
+                const elIdle = document.getElementById("stIdle");
+                const elMach = document.getElementById("stMachines");
+                const elPeak = document.getElementById("stPeak");
+                const elProd = document.getElementById("stProduct");
+                const elMatch = document.getElementById("stMatch");
+                const elMargin = document.getElementById("stMargin");
+                const elPayback = document.getElementById("stPayback");
+                const elRoi = document.getElementById("stRoi");
+                const elLink = document.getElementById("stLink");
+
+                if (elName) elName.textContent = s.name;
+                if (elLoc) elLoc.textContent = s.location;
+                if (elIdle) elIdle.textContent = s.idle;
+                if (elMach) elMach.textContent = s.machines;
+                if (elPeak) elPeak.textContent = s.peak;
+                if (elProd) elProd.textContent = s.product;
+                if (elMatch) elMatch.textContent = s.match;
+                if (elMargin) elMargin.textContent = s.margin;
+                if (elPayback) elPayback.textContent = s.payback;
+                if (elRoi) elRoi.textContent = s.roi;
+                if (elLink) elLink.href = s.link;
+
+                storyContent.classList.remove("fade-out");
+            }, 150);
+        }
+
+        const storySwitcher = document.getElementById("storySwitcher");
+        if (storySwitcher) {
+            storySwitcher.addEventListener("click", (e) => {
+                const btn = e.target.closest("[data-story]");
+                if (!btn) return;
+                document.querySelectorAll("#storySwitcher .story-tab-btn").forEach(b => b.classList.remove("active"));
+                btn.classList.add("active");
+                updateStory(btn.dataset.story);
+            });
+        }
+
+        // 2. Tabbed Directory Preview Data
+        const directoryData = {
+            factories: [
+                {
+                    badge: "Sharqia · الشرقية",
+                    status: "80% Idle Oct–Feb",
+                    title: "Delta Tomato Canning Co.",
+                    desc: "Equipped with washing lines, hot-break pulpers, vacuum evaporators, and retort sterilizers.",
+                    tags: ["fruit-vegetable-processing", "canning", "food-packaging"],
+                    linkText: "View Factory",
+                    url: "@Url.Action("Details", "Factories", new { id = 1 })"
+                },
+                {
+                    badge: "Gharbia · الغربية",
+                    status: "30% Idle Jan–Feb",
+                    title: "Mahalla Garment Works",
+                    desc: "120 industrial sewing machines, 30 overlock units, cutting tables, and steam finishing lines.",
+                    tags: ["garment-sewing", "textile-spinning"],
+                    linkText: "View Factory",
+                    url: "@Url.Action("Details", "Factories", new { id = 2 })"
+                },
+                {
+                    badge: "Suez · السويس",
+                    status: "40% Idle Jan–Feb",
+                    title: "Ain Sokhna Ceramics",
+                    desc: "Full ball mill, spray dryer, hydraulic press, and tunnel kiln line near Red Sea minerals.",
+                    tags: ["ceramic-firing", "stone-cutting"],
+                    linkText: "View Factory",
+                    url: "@Url.Action("Details", "Factories", new { id = 4 })"
+                }
+            ],
+            demand: [
+                {
+                    badge: "Giza · الجيزة",
+                    status: "200,000 pcs · Open",
+                    title: "500ml Food-Grade Plastic Containers",
+                    desc: "Seeking a local injection-molding partner for recurring monthly food packaging supply.",
+                    tags: ["injection-molding", "food-packaging"],
+                    linkText: "View Request",
+                    url: "@Url.Action("Details", "DemandRequests", new { id = 2 })"
+                },
+                {
+                    badge: "Port Said · بورسعيد",
+                    status: "Export Order · Open",
+                    title: "Sterilized Canned Vegetables Pallet",
+                    desc: "Export-ready canned legume and vegetable batch required with retort sterilization.",
+                    tags: ["canning", "fruit-vegetable-processing"],
+                    linkText: "View Request",
+                    url: "@Url.Action("Details", "DemandRequests", new { id = 6 })"
+                },
+                {
+                    badge: "Alexandria · الإسكندرية",
+                    status: "20,000 pcs · Open",
+                    title: "Durable School Uniform Batch",
+                    desc: "Seasonal contract manufacturing order before the autumn academic term.",
+                    tags: ["garment-sewing"],
+                    linkText: "View Request",
+                    url: "@Url.Action("Details", "DemandRequests", new { id = 3 })"
+                }
+            ],
+            suppliers: [
+                {
+                    badge: "Qalyubia · القليوبية",
+                    status: "Min Order: 5 Tons",
+                    title: "Nile Recycled Plastic Flakes",
+                    desc: "Washed, sorted HDPE and PP recycled flakes ready for injection molding and extrusion.",
+                    tags: ["Recycled plastic", "Polymers (resin)"],
+                    linkText: "View Supplier",
+                    url: "@Url.Action("Details", "Suppliers", new { id = 6 })"
+                },
+                {
+                    badge: "Red Sea · البحر الأحمر",
+                    status: "Min Order: 25 Tons",
+                    title: "Eastern Desert Clay & Kaolin Co.",
+                    desc: "High-purity kaolin, feldspar, and silica sand for ceramics and glass factories.",
+                    tags: ["Kaolin", "Clay", "Silica sand"],
+                    linkText: "View Supplier",
+                    url: "@Url.Action("Details", "Suppliers", new { id = 4 })"
+                },
+                {
+                    badge: "Beheira · البحيرة",
+                    status: "Seasonal Contract",
+                    title: "Delta Agro Tomato Cooperative",
+                    desc: "Direct farm-gate supply of processing tomatoes and citrus for food factories.",
+                    tags: ["Tomatoes", "Citrus"],
+                    linkText: "View Supplier",
+                    url: "@Url.Action("Details", "Suppliers", new { id = 3 })"
+                }
+            ],
+            startups: [
+                {
+                    badge: "Prototype Stage",
+                    status: "Needs 1.2M EGP",
+                    title: "EcoPack — Recycled Reusable Crates",
+                    desc: "Looking for an injection-molding factory with idle winter capacity to produce our first 15,000 units.",
+                    tags: ["injection-molding", "plastic-recycling"],
+                    linkText: "View Startup",
+                    url: "@Url.Action("Details", "Startups", new { id = 1 })"
+                },
+                {
+                    badge: "Early Revenue",
+                    status: "Needs 2.5M EGP",
+                    title: "NileHarvest — Ready Artisanal Sauces",
+                    desc: "Scaling distribution and seeking a food-processing plant with glass-jar filling and canning lines.",
+                    tags: ["fruit-vegetable-processing", "canning"],
+                    linkText: "View Startup",
+                    url: "@Url.Action("Details", "Startups", new { id = 4 })"
+                },
+                {
+                    badge: "MVP Stage",
+                    status: "Needs 800K EGP",
+                    title: "PalmPaper — Agri-Waste Packaging",
+                    desc: "Converting agricultural fiber into molded paper trays with local paper-converting partners.",
+                    tags: ["paper-converting", "food-packaging"],
+                    linkText: "View Startup",
+                    url: "@Url.Action("Details", "Startups", new { id = 2 })"
+                }
+            ]
+        };
+
+        const grid = document.getElementById("opportunityGrid");
+
+        function renderDirectoryCards(category) {
+            if (!grid) return;
+            const items = directoryData[category] || [];
+            grid.replaceChildren();
+
+            items.forEach(item => {
+                const col = document.createElement("div");
+                col.className = "col-md-6 col-lg-4";
+
+                const card = document.createElement("div");
+                card.className = "opportunity-card";
+
+                const top = document.createElement("div");
+
+                const metaRow = document.createElement("div");
+                metaRow.className = "d-flex justify-content-between align-items-center mb-3";
+
+                const locBadge = document.createElement("span");
+                locBadge.className = "small fw-semibold text-secondary";
+                locBadge.textContent = item.badge;
+
+                const statusBadge = document.createElement("span");
+                statusBadge.className = "badge-soft badge-emerald";
+                statusBadge.textContent = item.status;
+
+                metaRow.append(locBadge, statusBadge);
+
+                const title = document.createElement("h4");
+                title.className = "h5 fw-bold mb-2";
+                title.textContent = item.title;
+
+                const desc = document.createElement("p");
+                desc.className = "small text-secondary mb-3";
+                desc.textContent = item.desc;
+
+                const tagWrap = document.createElement("div");
+                tagWrap.className = "mb-3";
+                item.tags.forEach(t => {
+                    const chip = document.createElement("span");
+                    chip.className = "tag-pill-clean";
+                    chip.textContent = t;
+                    tagWrap.appendChild(chip);
+                });
+
+                top.append(metaRow, title, desc, tagWrap);
+
+                const bottom = document.createElement("div");
+                bottom.className = "pt-3 border-top d-flex justify-content-between align-items-center";
+
+                const link = document.createElement("a");
+                link.href = item.url;
+                link.className = "small fw-bold text-decoration-none";
+                link.style.color = "var(--accent-terracotta)";
+                link.textContent = `${item.linkText} →`;
+
+                bottom.appendChild(link);
+                card.append(top, bottom);
+                col.appendChild(card);
+                grid.appendChild(col);
+            });
+        }
+
+        const directoryTabs = document.getElementById("directoryTabs");
+        if (directoryTabs) {
+            directoryTabs.addEventListener("click", (e) => {
+                const btn = e.target.closest("[data-category]");
+                if (!btn) return;
+                document.querySelectorAll("#directoryTabs .filter-pill-btn").forEach(b => b.classList.remove("active"));
+                btn.classList.add("active");
+                renderDirectoryCards(btn.dataset.category);
+            });
+        }
+
+        // Initial render
+        renderDirectoryCards("factories");
+    </script>
+}

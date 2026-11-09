@@ -287,12 +287,18 @@ public class AccountController(
     public IActionResult ForgotPasswordConfirmation() => View();
 
     [HttpGet, AllowAnonymous]
-    public IActionResult Register()
+    public IActionResult Register(string? role = null)
     {
         if (User.Identity?.IsAuthenticated == true)
             return RedirectToAction("Index", "Home");
 
-        return View(new RegisterViewModel());
+        var vm = new RegisterViewModel();
+        if (!string.IsNullOrEmpty(role) && Roles.SelfRegistrable.Contains(role))
+        {
+            vm.Role = role;
+        }
+
+        return View(vm);
     }
 
     [HttpPost, AllowAnonymous]
